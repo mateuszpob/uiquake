@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%=typeof title == 'undefined' ? 'UIBooster' : title%></title>
+
+        <!-- Viewport mobile tag for sensible mobile support -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <!--STYLES-->
+        <link rel="stylesheet" href="/styles/admin.css">
+        <link rel="stylesheet" href="/styles/bootstrap.css">
+        <link rel="stylesheet" href="/styles/importer.css">
+        <!--STYLES END-->
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
+    </head>
+
+    <body style="    overflow-y: scroll;">
+        <header style="height:60px;">
+            <% include ./top_menu %>
+        </header>
+        <div class="main-container">
+            <%- body %>
+        </div>
+        
+        <!--TEMPLATES-->
+        
+        <!--TEMPLATES END-->
+
+
+        <!--SCRIPTS-->
+        <script src="/js/dependencies/sails.io.js"></script>
+        <script src="/js/dependencies/jquery-3.1.1.min.js"></script>
+        <script src="/js/dependencies/bootstrap.js"></script>
+        <script src="/js/dependencies/main.js"></script>
+        <script src="/js/tracker.js"></script>
+        <!--SCRIPTS END-->
+        <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
+    </body>
+</html>

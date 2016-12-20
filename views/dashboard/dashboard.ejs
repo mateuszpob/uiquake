@@ -1,0 +1,43 @@
+<% layout("./index")%>
+
+
+<div class="row">
+    <div class="col-md-offset-3 col-sm-offset-1 col-md-6 col-sm-10 col-xs-12">
+        <!--Start X-Panel-->
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Install UIBooster on your site. <small></small></h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <p>
+                    Start by adding the JavaScript tracking code below to your site. 
+                    Copy and paste it into your tag manager or the <strong>&lt;head&gt;</strong> tag on every page where you wish to track visitors.
+                </p>
+                <br>
+                <code>
+                    &lt;script&gt; <br>
+                    (function (u,i) { <br>
+                    a = i.getElementsByTagName('head')[0];<br>
+                    c = i.createElement('script');<br>
+                    c.src = '//127.0.0.1:1337/clientscr/<%= user.secret %>/trck';<br>
+                    a.appendChild(c);<br>
+                })(window, document)<br>
+                    &lt;/script&gt;
+                </code>
+                <br>
+                <br>
+                <br>
+                <button class="green-button btn-sm" id="check-client-script" onclick="location.href = '/dashboard/recorded-sessions'">Start recording</button>
+
+            </div>
+        </div>     
+        <!--End X-Panel-->
+    </div>
+</div>
+<script>
+
+    
+
+</script> 
+<script> (function (u,i) { a = i.getElementsByTagName('head')[0]; c = i.createElement('script'); c.src = '//127.0.0.1:1337'; a.appendChild(c); })(window, document) </script> 

@@ -7,9 +7,9 @@
 
 module.exports = {
 	index: function (req, res) {
-            console.log(req.user)
-            
-            return res.json({'ses': req.user});
+            return res.view('homepage');
+        },
+	getScriptsPage: function (req, res) {
+            return res.view('after_register');
         },
 };
-

@@ -6,6 +6,8 @@
  */
 
 var passport = require('passport');
+var sha1 = require('sha1');
+
 module.exports = {
 
     login: function (req, res) {
@@ -14,10 +16,6 @@ module.exports = {
     process: function (req, res) {
         console.log('Passport 554')
         passport.authenticate('local', function (err, user, info) {
-            
-            console.log('================>');
-            console.log(err, user, info);
-            
             if ((err) || (!user)) {
                 return res.send({
                     message: 'login failed'
@@ -27,23 +25,46 @@ module.exports = {
             req.logIn(user, function (err) {
                 if (err)
                     res.send(err);
-                return res.send({
-                    message: 'login successful'
-                });
+                return res.redirect('/dashboard');
             });
         })(req, res);
     },
     logout: function (req, res) {
         req.logout();
-        res.send('logout successful');
+        return res.redirect('/');
     },
-    create: function (req, res) {
-        User.create(req.params.all()).exec(function (err, user) {
-            res.send('Create kurwa!');
+    createAccount: function (req, res) {
+        return res.view('auth/register');
+    },
+    /*
+     * Tworzy nowego usera. Potem przekierowuje go na strone
+     * ze skryptami ktore musi wkleic na swojej stronie.
+     * 
+     * @param {type} req
+     * @param {type} res
+     * @returns {redirect}
+     */
+    createAccountProcess: function (req, res) {
+        var params = {};
+        var url = req.param('url').headers.referrer.replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0];
+        params.email = req.param('email');
+        params.username = req.param('username');
+        params.password = req.param('password');
+        params.secret = sha1(new Date().getTime());
+        params.sites = [{url: url, active: true, secret: sha1(url + 'dupa7')}];
+
+        User.create(params).exec(function (err, user) {
+            req.login(user, function (err) {
+                if (!err) {
+                    res.redirect('/dashboard');
+                } else {
+                    console.log('Cos sie spierdolilo pczy rejestracji usera!');
+                }
+            })
         });
 
 
-        
+
     }
 };
 

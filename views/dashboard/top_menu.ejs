@@ -1,0 +1,21 @@
+<div id="top-menu" class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header"><a class="navbar-brand" href="/">UIBooster</a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse navbar-menubuilder">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="/dashboard">Dashboard</a>
+                </li>
+                <li><a href="/dashboard/recorded-sessions">Recordings</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-user-email">
+                    <%= user.username %>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

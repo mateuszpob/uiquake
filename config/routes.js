@@ -21,6 +21,9 @@
  */
 
 module.exports.routes = {
+        
+    // GET CLIENT SCRIPTS
+    'get /clientscr/:client_secret/trck': 'ClientController.getClientTrackingScript',
 
     /***************************************************************************
      *                                                                          *
@@ -39,13 +42,21 @@ module.exports.routes = {
         controller: 'AuthController',
         action: 'login'
     },
-    '/process': {
+    '/login-process': {
         controller: 'AuthController',
         action: 'process'
     },
     '/logout': {
         controller: 'AuthController',
         action: 'logout'
+    },
+    '/create-an-account': {
+        controller: 'AuthController',
+        action: 'createAccount'
+    },
+    '/create-an-account-process': {
+        controller: 'AuthController',
+        action: 'createAccountProcess'
     },
 
     /***************************************************************************
@@ -58,21 +69,24 @@ module.exports.routes = {
      *                                                                          *
      ***************************************************************************/
     
-    'get /clientscr/:client_key/trck': 'ClientController.getClientTrackingScript',
-    'get /clientscr/:client_key/sock': 'ClientController.getClientSocketScript',
+    // DASHBOARD
+    'get /dashboard': 'DashboardController.displayDashboard',
+    
+    // RECORDING SESSIONS LIST
+    'get /dashboard/recorded-sessions': 'TrackerController.displayTrackingSessionList',
+    'post /dashboard/get-sessions-list': 'TrackerController.getSessionsList',
+    
+    //RECORDINGS
+    'get /dashboard/display-tracking/:tracker_id': 'TrackerController.displayTracking',
+    'post /dashboard/display-tracking/:tracker_id': 'TrackerController.getTrackData',
     
     
-    'get /test': 'AdminController.test',
+    
     
     
     'post /get-track-data': 'TrackerController.getTrackData',
     
-    'get /mouse-tracker/list': 'TrackerController.displayTrackingSessionList',
-    'post /mouse-tracker/get-sessions-list': 'TrackerController.getSessionsList',
     
-    'get /mouse-tracker/display-tracking/:tracker_id': 'TrackerController.displayTracking',
-    'post /mouse-tracker/display-tracking/:tracker_id': 'TrackerController.getTrackData',
-    'get /mouse-tracker/background/:tracker_id' : 'TrackerController.getBackground'
 
      
 

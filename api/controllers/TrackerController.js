@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var sha1 = require('sha1');
+
 module.exports = {
     /*
      * GET Wyświetla listę nagranych sesji z ruchem myszy.
@@ -13,7 +15,7 @@ module.exports = {
      * @returns {unresolved}
      */
     displayTrackingSessionList: function (req, res) {
-        return res.view('cursor_tracking/session_list');
+        return res.view('dashboard/recordings/session_list', {user: req.user});
     },
     /*
      * POST 
@@ -23,9 +25,7 @@ module.exports = {
      */
     getSessionsList: function (req, res) {
         var obj = Tracker.find().sort('session_started_at DESC').exec(function (err, obj) {
-            console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
-            console.log(obj)
-            return res.json({data:obj})
+            return res.json({data: obj})
         });
     },
     /* 
@@ -35,24 +35,27 @@ module.exports = {
      * @returns {undefined}
      */
     displayTracking: function (req, res) {
-        var obj = Tracker.findOne({'tracker_id':req.param('tracker_id')}).exec(function (err, obj) {
+        var obj = Tracker.findOne({'tracker_id': req.param('tracker_id')}).exec(function (err, obj) {
             res.set("Access-Control-Allow-Origin", "*");
-            
-            return res.view('cursor_tracking/tracker_panel', {
-                    tracker_id: req.param('tracker_id')
-                });
+
+            return res.view('dashboard/recordings/tracker_panel', {
+                tracker_id: req.param('tracker_id'),
+                user: req.user
+            });
             console.log(obj);
-            if(obj){
+            if (obj) {
                 return res.view('cursor_tracking/tracker_panel', {
-                    tracker_id: req.param('tracker_id')
+                    tracker_id: req.param('tracker_id'),
+                    user: req.user
                 });
-            }else{
+            } else {
                 return res.view('cursor_tracking/tracker_panel', {
-                    tracker_id: null
+                    tracker_id: null,
+                    user: req.user
                 });
             }
         });
-        
+
     },
     /*
      * POST Zwraca dane trakingu
@@ -62,7 +65,7 @@ module.exports = {
      */
     getTrackData: function (req, res) {
         var obj = Tracker.findOne({id: req.param('tracker_id')}).exec(function (err, obj) {
-            return res.json({data:obj})
+            return res.json({data: obj})
         });
     },
     /**
@@ -71,10 +74,11 @@ module.exports = {
     index: function (req, res) {
         return 1;
         Tracker.find().find().exec(function (err, obj) {
-            
+
 //        res.setHeader('Content-Type', 'application/json');
             return res.view('tracker_panel', {
-                data: JSON.stringify(obj)
+                data: JSON.stringify(obj),
+                user: req.user
             });
 //            return res.json({
 //                todo: obj
@@ -88,8 +92,8 @@ module.exports = {
      */
     getBackground: function (req, res) {
         var obj = Tracker.findOne({id: req.param('tracker_id')}).exec(function (err, obj) {
-            
-            res.writeHead(200, {'content-type':'text/html'});
+
+            res.writeHead(200, {'content-type': 'text/html'});
             res.write(obj.tracking_data[0].background);
             res.end();
         });

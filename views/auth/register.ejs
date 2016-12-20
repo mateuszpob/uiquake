@@ -1,12 +1,15 @@
-<% if (errors) {%>
-  <% errors.forEach(function (error) { %>
-    <%= __(error) %>
-  <% }) %>
-<% } %>
 
-<form role="form" action="/auth/local/register" method="post">
-  <input type="text" name="username" placeholder="Username">
-  <input type="text" name="email" placeholder="Email">
-  <input type="password" name="password" placeholder="Password">
-  <button type="submit">Sign up</button>
+<form id="msform" method="POST" action="/create-an-account-process">
+    <!-- fieldsets -->
+    <fieldset>
+        <h2 class="fs-title">Join UIBooster</h2>
+        <img src="/images/uibooster_logo.png" width="60" style="margin-bottom: 10px;" alt="UIBooster logo"/>
+        <input type="text" name="email" placeholder="Email" />
+        <input type="text" name="username" placeholder="Username" />
+        <input type="password" name="password" placeholder="Password" />
+        <br />
+        <br />
+        <input type="text" name="url" placeholder="Site url" />
+        <input type="submit" name="next" class="next green-button btn" value="Sign up" />
+    </fieldset>
 </form>
