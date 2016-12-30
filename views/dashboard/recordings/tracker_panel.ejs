@@ -75,15 +75,34 @@
         position: absolute;
         bottom: 0px;
     }
-    #trck-play-session {
+    /*    #trck-play-session {
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 15px solid #fff;
+            margin: 15px 14px;
+            cursor: pointer;
+        }*/
+
+
+    #trck-play-session.play {
+        margin: 13px 18px;
         width: 0;
         height: 0;
-        border-top: 10px solid transparent;
-        border-bottom: 10px solid transparent;
-        border-left: 15px solid #fff;
-        margin: 15px 14px;
-        cursor: pointer;
+        border-top: 12px solid transparent;
+        border-left: 16px solid #fff;
+        border-bottom: 12px solid transparent;
     }
+
+    #trck-play-session.pause {
+        margin: 13px 14px;
+        width: 21px;
+        height: 25px;
+        border-right: 8px solid #fff;
+        border-left: 8px solid #fff;
+    }
+
     #trck-timeline{
         width: 96%;
         height: 10px;
@@ -126,7 +145,7 @@
                 <!--<canvas id="tracker-canvas"></canvas>-->
                 <div id="overlay" style="position:absolute"></div>
                 <div class="huj">
-                    <div id="trck-play-session"></div>
+                    <div id="trck-play-session" class="pause"></div>
                     <div id="trck-timeline">
                         <div id="trck-progress"></div>
                     </div>

@@ -120,7 +120,7 @@ Tracker.prototype.findFirsAndLastEventTime = function () {
  * Osadza html'a w iframe i
  * dokleja canvas do srodka iframe
  */
-Tracker.prototype.initCanvasAndBackground = function (one_step) { console.log('1111111111111111111111112332')
+Tracker.prototype.initCanvasAndBackground = function (one_step) {
     var inst = this;
     var parser = new DOMParser(); 
     // przetwarza kod html na obiekt 'document'
@@ -139,8 +139,6 @@ Tracker.prototype.initCanvasAndBackground = function (one_step) { console.log('1
                 .replace(/(&#39;)/g,"'")
                 .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, ""); // komentarze jednoliniowe i blokowe
         
-    console.log('=================== huj ====================')    
-    console.log(bckgr)
     this.background = window.frames['tracker-background'];
     this.background.document.open();
     this.background.document.write(bckgr);
@@ -247,7 +245,7 @@ Tracker.prototype.backgroundEvent = function (one_step, t){
 Tracker.prototype.mouseMoveEvent = function (one_step){
     if(one_step){
         this.ctx.lineTo(one_step.p_x, one_step.p_y);
-        this.ctx.stroke()
+        this.ctx.stroke();
         document.getElementById('tracker-cursor').style.top = one_step.c_y-30;
         document.getElementById('tracker-cursor').style.left = one_step.c_x-40;
     }

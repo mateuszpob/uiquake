@@ -7,9 +7,11 @@
 
 module.exports = {
 	index: function (req, res) {
+            if(req.user)
+                return res.redirect('/dashboard');
+            else
+                return res.redirect('/login');
+            
             return res.view('homepage');
-        },
-	getScriptsPage: function (req, res) {
-            return res.view('after_register');
-        },
+        }
 };
