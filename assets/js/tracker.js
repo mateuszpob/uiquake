@@ -120,7 +120,7 @@ Tracker.prototype.findFirsAndLastEventTime = function () {
  * Osadza html'a w iframe i
  * dokleja canvas do srodka iframe
  */
-Tracker.prototype.initCanvasAndBackground = function (one_step) {
+Tracker.prototype.initCanvasAndBackground = function (one_step) { console.log('O w pizdeczke!')
     var inst = this;
     var parser = new DOMParser(); 
     // przetwarza kod html na obiekt 'document'

@@ -43,19 +43,7 @@ module.exports = {
                         break;
                     case 'init': 
                         var background = track_data.background;
-//                            .replace(/(\r\n|\n|\r)/gm,"")
-//                            .replace(/src="\/\//g,'src="_sailtrack/')
-//                            .replace(/href="\/\//g,'href="_sailtrack/')
-//
-//                            .replace(/src="\//g,'src="'+track_data.origin+'/')
-//                            .replace(/href="\//g,'href="'+track_data.origin+'/')
-//
-//                            .replace(/src="_sailtrack\//g,'src="//')
-//                            .replace(/href="_sailtrack\//g,'href="//')
-//                    
-//                
-//                            .replace(/http:\/\/127.0.0.1:1337\/clientscr/g,'');
-                    
+                        
                         console.log('================== Jaaaaazdaaa z obiektem!: '+track_data.type);
                         obj.background_data[''+parseInt(time_offset)] = {
                             background: background, 
@@ -72,22 +60,7 @@ module.exports = {
                 obj.save();
             }else{
                 
-//                var x = btoa(track_data.background);
-//                console.log(x)
-                
                 var background = track_data.background;
-//                            .replace(/(\r\n|\n|\r)/gm,"")
-//                            .replace(/src="\/\//g,'src="_sailtrack/')
-//                            .replace(/href="\/\//g,'href="_sailtrack/')
-//
-//                            .replace(/src="\//g,'src="'+track_data.origin+'/')
-//                            .replace(/href="\//g,'href="'+track_data.origin+'/')
-//
-//                            .replace(/src="_sailtrack\//g,'src="//')
-//                            .replace(/href="_sailtrack\//g,'href="//')
-//                    
-//                
-//                            .replace(/http:\/\/127.0.0.1:1337\/clientscr/g,'');
                 
                 Tracker.create({
                     session_id: track_data.session_id,
@@ -102,7 +75,8 @@ module.exports = {
                             viewport_width: track_data.viewport_width,
                             viewport_height: track_data.viewport_height,
                             document_width: track_data.document_width,
-                            document_height: track_data.document_height
+                            document_height: track_data.document_height,
+                            scroll_top: track_data.scroll_top
                     }}
                     
                 }).exec(function createCB(err, created) {

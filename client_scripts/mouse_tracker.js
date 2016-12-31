@@ -137,6 +137,7 @@ TrackerClient.prototype.sendInitData = function (html) {
         document_height: document.body.scrollHeight,
         origin: window.location.origin,
         background: html,
+        scroll_top: document.body.scrollTop,
         move_data: {},
         scroll_data: {}
     }
@@ -227,7 +228,7 @@ var init = function () {
 
     document.addEventListener('scroll', function (e) {
         inst.onscrollme(e);
-        inst.onmousemoveM(e);
+//        inst.onmousemoveM(e);
     });
 
 
