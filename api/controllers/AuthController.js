@@ -46,7 +46,8 @@ module.exports = {
      */
     createAccountProcess: function (req, res) {
         var params = {};
-        var url = req.param('url').headers.referrer.replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0];
+        //console.log(req.headers)
+        var url = req.headers.referer.replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0];
         params.email = req.param('email');
         params.username = req.param('username');
         params.password = req.param('password');
