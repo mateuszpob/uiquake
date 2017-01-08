@@ -15,6 +15,9 @@ module.exports = {
      * @returns {unresolved}
      */
     displayTrackingSessionList: function (req, res) {
+        if(!req.user)
+            return res.redirect('/login');
+        
         return res.view('dashboard/recordings/session_list', {user: req.user});
     },
     /*
@@ -24,8 +27,11 @@ module.exports = {
      * @returns {undefined}
      */
     getSessionsList: function (req, res) {
+        if(!req.user)
+            return res.json({error: 'unlogged'});
+        
         var obj = Tracker.find().sort('session_started_at DESC').exec(function (err, obj) {
-            return res.json({data: obj})
+            return res.json({data: obj});
         });
     },
     /* 
@@ -35,6 +41,9 @@ module.exports = {
      * @returns {undefined}
      */
     displayTracking: function (req, res) {
+        if(!req.user)
+            return res.redirect('/login');
+        
         var obj = Tracker.findOne({'tracker_id': req.param('tracker_id')}).exec(function (err, obj) {
             res.set("Access-Control-Allow-Origin", "*");
 
@@ -64,62 +73,11 @@ module.exports = {
      * @returns {object}
      */
     getTrackData: function (req, res) {
+        if(!req.user)
+            return res.json({error: 'unlogged'});
+        
         var obj = Tracker.findOne({id: req.param('tracker_id')}).exec(function (err, obj) {
             return res.json({data: obj})
-        });
-    },
-    /**
-     * `TrackerController.index()`
-     */
-    index: function (req, res) {
-        return 1;
-        Tracker.find().find().exec(function (err, obj) {
-
-//        res.setHeader('Content-Type', 'application/json');
-            return res.view('tracker_panel', {
-                data: JSON.stringify(obj),
-                user: req.user
-            });
-//            return res.json({
-//                todo: obj
-//            });
-        });
-
-    },
-    /**
-     * `TrackerController.getBackground()`
-     *  dla tracking-panel
-     */
-    getBackground: function (req, res) {
-        var obj = Tracker.findOne({id: req.param('tracker_id')}).exec(function (err, obj) {
-
-            res.writeHead(200, {'content-type': 'text/html'});
-            res.write(obj.tracking_data[0].background);
-            res.end();
-        });
-    },
-    /**
-     * `TrackerController.show()`
-     */
-    show: function (req, res) {
-        return res.json({
-            todo: 'show() is not implemented yet!'
-        });
-    },
-    /**
-     * `TrackerController.edit()`
-     */
-    edit: function (req, res) {
-        return res.json({
-            todo: 'edit() is not implemented yet!'
-        });
-    },
-    /**
-     * `TrackerController.delete()`
-     */
-    delete: function (req, res) {
-        return res.json({
-            todo: 'delete() is not implemented yet!'
         });
     }
 };

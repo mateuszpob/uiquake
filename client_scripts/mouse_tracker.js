@@ -19,7 +19,7 @@ var TrackerClient = function () {
 
 
 
-TrackerClient.prototype.onmousemoveM = function (e) {
+TrackerClient.prototype.onMouseMoveMe = function (e) {
     this.move++;
     if (this.move % this.rast === 0) {
         var time_from_start = Date.now() - this.time_start;
@@ -62,12 +62,12 @@ TrackerClient.prototype.onmousemoveM = function (e) {
 
     }
     if (this.move % this.send_moment === 0) {
-        this.sendData('move', this.point_stack);
+        this.sendData('move_data', this.point_stack);
         this.move = 1;
     }
 };
 
-TrackerClient.prototype.onscrollme = function () {
+TrackerClient.prototype.onScrollMe = function () {
     var inst = this;
     var time_from_start = Date.now() - this.time_start;
     time_from_start = Math.round(time_from_start / 10) * 10;
@@ -83,40 +83,40 @@ TrackerClient.prototype.onscrollme = function () {
             end_time: inst.scroll_stack[inst.scroll_stack.length - 1].time
         };
         inst.scroll_stack = [];
-        inst.sendData('scroll', inst.tmp_stack)
+        inst.sendData('scroll_data', inst.tmp_stack);
     }, 100);
 
 };
 
+TrackerClient.prototype.onClickMe = function (e) {
+    var time_from_start = Date.now() - this.time_start;
+    time_from_start = Math.round(time_from_start / 10) * 10;
+    var prop = "" + time_from_start;
+    var click = [];
+    click['' + prop] = {
+        p_x: e.pageX,
+        p_y: e.pageY,
+        c_x: e.clientX,
+        c_y: e.clientY,
+        target_tag: e.target.tagName,
+        target_id: e.target.id,
+        target_class: e.target.className,
+    };
+    console.log(click)
+    this.sendData('click_data', click)
+};
+
 TrackerClient.prototype.sendData = function (type, to_send) {
     if (to_send) {
-
-        var point_stack = null;
-        var scroll_stack = null;
-
-
-        switch (type) {
-            case 'move':
-                point_stack = to_send;
-                scroll_stack = {};
-                break;
-            case 'scroll':
-                point_stack = {};
-                scroll_stack = to_send;
-                break;
-        }
-
-        var points_data = {
-            session_id: this.session_id,
-            app_key: this.uib_ukey,
-            session_started_at: this.time_start,
-            type: type,
-            origin: window.location.origin,
-            move_data: point_stack,
-            scroll_data: scroll_stack
-        }
-
-        this.socket.emit('points_data', points_data);
+        var points_data = [];
+        points_data['session_id'] = this.session_id;
+        points_data['app_key'] = this.uib_ukey;
+        points_data['session_started_at'] = this.time_start;
+        points_data['type'] = type;
+        points_data['origin'] = window.location.origin;
+        points_data[type] = to_send;
+//console.log(points_data)
+        this.socket.emit('points_data', Object.assign({}, points_data));
         this.point_stack = {};
     } else {
 
@@ -223,12 +223,15 @@ var init = function () {
 
     document.addEventListener("mousemove", function (e) {
         last_html = document.body.outerHTML;
-        inst.onmousemoveM(e);
+        inst.onMouseMoveMe(e);
     });
 
     document.addEventListener('scroll', function (e) {
-        inst.onscrollme(e);
-//        inst.onmousemoveM(e);
+        inst.onScrollMe(e);
+    });
+    
+    document.addEventListener('click', function (e) {
+        inst.onClickMe(e);
     });
 
 

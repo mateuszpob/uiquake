@@ -165,6 +165,49 @@
         max-width: 1844px;
         background: deepskyblue;
     }
+    .user-action{
+        float: left;
+        clear: left;
+        margin-bottom: 10px;
+        margin-left: -4px;
+    }
+    .user-action.active{
+        margin-left: -5px;
+    }
+    .user-action p{
+        float: left;
+        margin-left: 3px;
+        line-height: 11px;
+    }
+    .user-action.active p{
+        font-weight: bold;
+        font-size: 17px;
+    }
+    .user-action.active p span{
+        font-size: 14px;
+    }
+    .user-action p span.actag{
+        text-transform: lowercase;
+        font-style: italic;
+        color: #888;
+    }
+    .user-action p span.time{
+        
+    }
+    .user-action .mark{
+        float: left;
+        background-color: #0f0;
+        height: 10px;
+        width: 10px;
+    }
+    .user-action.active .mark{
+        height: 12px;
+        width: 12px;
+        margin-top: -1px;
+    }
+    .click-action > .mark{
+        background-color: #0f0;
+    }
 </style>
 
 
@@ -175,7 +218,7 @@
                 <h2>Actions <small</small></h2>
                 <div class="clearfix"></div>
             </div>
-            <div class="x_content">
+            <div class="x_content" id="actions-container">
 
             </div>
         </div>
@@ -191,7 +234,7 @@
                 <!--<canvas id="tracker-canvas"></canvas>-->
                 <div id="overlay" style="position:absolute"></div>
                 <div class="huj">
-                    <div id="trck-play-session" class="pause"></div>
+                    <div id="trck-play-session" class="pause" tooltip="Jebać policje"></div>
                     <div id="trck-timeline">
                         <div id="trck-progress"></div>
                     </div>

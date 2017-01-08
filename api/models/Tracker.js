@@ -17,59 +17,48 @@ module.exports = {
      * Tu przylatują dane przez sockety. Dodajemy do istniejącej sesji, albo tworzy nową jeśli takiej nie ma.
      */
     insertTrackData: function (track_data) {
-        console.log(track_data)
-//        return;
-        
         Tracker.findOne({
             session_id: track_data.session_id,
             app_key: track_data.app_key,
             // session_started_at: track_data.session_started_at
         }).exec(function (err, obj) {
-            if(obj){
-//                console.log(track_data);
-                //var time_offset = track_data.session_started_at - obj.session_started_at;
+            if (obj) {
+                
                 var time_offset = Math.round((track_data.session_started_at - obj.session_started_at) / 10) * 10;
                 console.log(time_offset)
-                switch(track_data.type){
-                    case 'move':
-                        for (var attrname in track_data.move_data) { 
-                            obj.move_data[''+parseInt(parseInt(time_offset) + parseInt(attrname))] = track_data.move_data[attrname]; 
-                        }
-                        break;
-                    case 'scroll':
-                        for (var attrname in track_data.scroll_data) { 
-                            obj.scroll_data[''+parseInt(parseInt(time_offset) + parseInt(attrname))] = track_data.scroll_data[attrname]; 
-                        }
-                        break;
-                    case 'init': 
-                        var background = track_data.background;
-                        
-                        console.log('================== Jaaaaazdaaa z obiektem!: '+track_data.type);
-                        obj.background_data[''+parseInt(time_offset)] = {
-                            background: background, 
-                            viewport_width: track_data.viewport_width,
-                            viewport_height: track_data.viewport_height,
-                            document_width: track_data.document_width,
-                            document_height: track_data.document_height,
-                        }
-                        break;
+
+                for (var attrname in track_data[track_data.type]) {
+                    if(track_data[track_data.type][attrname])
+                        obj[track_data.type]['' + parseInt(parseInt(time_offset) + parseInt(attrname))] = track_data[track_data.type][attrname];
                 }
-                
-                
-                
+                // Tu backgroundy lecą
+                if (track_data.type === 'init') {
+                    var background = track_data.background;
+
+                    console.log('================== Jaaaaazdaaa z obiektem!: ' + track_data.type);
+                    obj.background_data['' + parseInt(time_offset)] = {
+                        background: background,
+                        viewport_width: track_data.viewport_width,
+                        viewport_height: track_data.viewport_height,
+                        document_width: track_data.document_width,
+                        document_height: track_data.document_height,
+                    }
+                }
                 obj.save();
-            }else{
                 
+            } else {
+                //@todo sprawdzanie czy jest taki user zarejestrowany
                 var background = track_data.background;
-                
+
                 Tracker.create({
                     session_id: track_data.session_id,
                     app_key: track_data.app_key,
                     origin: track_data.origin,
                     session_started_at: track_data.session_started_at,
-                    
+
                     move_data: {},
                     scroll_data: {},
+                    click_data: {},
                     background_data: {10: {
                             background: background,
                             viewport_width: track_data.viewport_width,
@@ -77,13 +66,13 @@ module.exports = {
                             document_width: track_data.document_width,
                             document_height: track_data.document_height,
                             scroll_top: track_data.scroll_top
-                    }}
-                    
+                        }}
+
                 }).exec(function createCB(err, created) {
                     console.log('create new Object.')
                 });
             }
-    
+
         });
     },
 };
