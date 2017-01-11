@@ -11,6 +11,12 @@
 
 module.exports.bootstrap = function (cb) {
 
+//    if (process.argv[2]) {
+//        var port = parseInt(process.argv[2]);
+//        sails.config.port = port;
+//    }
+
+    sails.config.port = 8080;
 
     // Tracking data handler
     sails.io.on('connect', function (socket) {
@@ -23,7 +29,7 @@ module.exports.bootstrap = function (cb) {
         }
 
     });
-    
+
     // It's very important to trigger this callback method when you are finished
     // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
     cb();
