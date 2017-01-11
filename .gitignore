@@ -39,7 +39,7 @@
 # 
 ################################################
 
-config/env/development.js
+config/env/*
 config/local.js
 
 
