@@ -10,7 +10,7 @@
  *
  */
 
-module.exports = {
+module.exports = { 
 
   /***************************************************************************
    * Set the default database connection for models in the development       *
