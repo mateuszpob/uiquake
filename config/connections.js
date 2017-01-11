@@ -66,7 +66,7 @@ module.exports.connections = {
 //   },
     someMongodbServer: {
         adapter: 'sails-mongo',
-        url: 'mongodb://huj:huj@ds159188.mlab.com:59188/czfurka'
+        url: process.env.CONNSTR
     }
 //   someMongodbServer: {
 //     adapter: 'sails-mongo',
