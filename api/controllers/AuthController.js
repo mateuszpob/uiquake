@@ -47,7 +47,7 @@ module.exports = {
     createAccountProcess: function (req, res) {
         var params = {};
         //console.log(req.headers)
-        var url = req.headers.referer.replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0];
+        var url = req.param('url').replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0];
         params.email = req.param('email');
         params.username = req.param('username');
         params.password = req.param('password');
@@ -59,7 +59,7 @@ module.exports = {
                 if (!err) {
                     res.redirect('/dashboard');
                 } else {
-                    console.log('Cos sie spierdolilo pczy rejestracji usera!');
+                    console.log('Cos sie spier####lo pczy rejestracji usera!');
                 }
             })
         });
