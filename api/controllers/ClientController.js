@@ -19,8 +19,9 @@ module.exports = {
 
         User.findOne({secret: client_secret}).exec(function (err, user) {
 //            console.log('====================== > ' + client_secret)
-//            console.log(user)
+            console.log(req.headers)
             if (user) {
+                
                 var referrer = req.headers.referer.replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0]
                 user.sites.forEach(function (site) {
 //                    console.log(site)
