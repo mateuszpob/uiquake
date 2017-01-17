@@ -81,7 +81,7 @@ module.exports.routes = {
     'post /dashboard/display-tracking/:tracker_id': 'TrackerController.getTrackData',
     
     //REMOVE RECORDINGS
-    'post /dashboard/remove-tracking/:tracker_id': 'TrackerController.removeTracking',
+    'post /dashboard/remove-tracking': 'TrackerController.removeTracking',
     
     
     
