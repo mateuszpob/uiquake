@@ -96,7 +96,9 @@ crossorigin="anonymous"></script>
                     "data": "id",
                     "render": function (data, type, row) {
                         var url = "/dashboard/display-tracking/" + data
-                        return '<button class="btn btn-default btn-rounded btn-condensed btn-sm edit pull-right" onclick="window.location=\'' + url + '\'">Play</button>';
+                        var url_del = "/dashboard/remove-session/" + data
+                        return '<button class="btn btn-default btn-rounded btn-condensed btn-sm edit pull-right" onclick="window.location=\'' + url + '\'">Play</button>'
+                        + '<button class="btn btn-default btn-rounded btn-condensed btn-sm edit pull-right" onclick="window.location=\'' + url_del + '\'">Play</button>';
 
                     },
                 }

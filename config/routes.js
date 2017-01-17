@@ -76,9 +76,12 @@ module.exports.routes = {
     'get /dashboard/recorded-sessions': 'TrackerController.displayTrackingSessionList',
     'post /dashboard/get-sessions-list': 'TrackerController.getSessionsList',
     
-    //RECORDINGS
+    //SESSION RECORDINGS
     'get /dashboard/display-tracking/:tracker_id': 'TrackerController.displayTracking',
     'post /dashboard/display-tracking/:tracker_id': 'TrackerController.getTrackData',
+    
+    //REMOVE RECORDINGS
+    'post /dashboard/remove-tracking/:tracker_id': 'TrackerController.removeTracking',
     
     
     

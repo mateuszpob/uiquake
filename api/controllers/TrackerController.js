@@ -79,6 +79,56 @@ module.exports = {
         var obj = Tracker.findOne({id: req.param('tracker_id')}).exec(function (err, obj) {
             return res.json({data: obj})
         });
+    },
+    /*
+     * POST wywala nagrana sesje trackingu
+     */
+    removeTracking: function (req, res) {
+        if(!req.user)
+            return res.json({error: 'unlogged'});
+        
+        var obj = Tracker.destroy({id: req.param('tracker_id')}).exec(function (err) {
+            return res.json({data: err})
+        });
+        
     }
+    
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
