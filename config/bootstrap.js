@@ -16,6 +16,7 @@ module.exports.bootstrap = function (cb) {
 //        sails.config.port = port;
 //    }
 
+    sails.config.port = 8080;
 
     // Tracking data handler
     sails.io.on('connect', function (socket) {
