@@ -17,9 +17,7 @@ module.exports = {
         console.log('Passport 554')
         passport.authenticate('local', function (err, user, info) {
             if ((err) || (!user)) {
-                return res.send({
-                    message: 'login failed'
-                });
+                return res.redirect('/login');
                 res.send(err);
             }
             req.logIn(user, function (err) {
