@@ -54,6 +54,20 @@
     integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
 crossorigin="anonymous"></script>
 <script>
+    function removeTracking (e, data){
+        var http = new XMLHttpRequest();
+        var url = "/dashboard/remove-tracking/";
+        var params = "tracker_id=" + data;
+        http.open("POST", url, true);
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function() {
+            if(http.readyState == 4 && http.status == 200) {
+                window.location.reload();
+            }
+        }
+        http.send(params);
+    };
+        
     $(document).ready(function () {
         $('#example').DataTable({
             "ajax": {
@@ -108,19 +122,7 @@ crossorigin="anonymous"></script>
             //order:[[3, "desc"]]
         });
         
-        function removeTracking (e, data){
-            var http = new XMLHttpRequest();
-            var url = "/dashboard/remove-tracking/";
-            var params = "tracker_id=" + data;
-            http.open("POST", url, true);
-            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            http.onreadystatechange = function() {
-                if(http.readyState == 4 && http.status == 200) {
-                    window.location.reload();
-                }
-            }
-            http.send(params);
-        };
+        
         
     });
 
