@@ -65,15 +65,21 @@ module.exports.connections = {
 //     database: 'czfurka' //optional
 //   },
     someMongodbServer: {
-        adapter: 'sails-mongo',
-        url: process.env.CONNSTR
-    }
+//        adapter: 'sails-mongo',
+//        url: process.env.CONNSTR
+    },
 //   someMongodbServer: {
 //     adapter: 'sails-mongo',
 //     host: 'localhost',
 //     port: 27017,
 //     database: 'sailspass' //optional
 //   },
+
+    huj: {
+        adapter: 'sails-mongo',
+//        url: 'mongodb://uiquake:qweasd123A@85.255.15.162:27017/uiquake'
+url: 'mongodb://uiquake:qweasd123A@85.255.15.162:27017/uiquake'
+    },
 
     /***************************************************************************
      *                                                                          *
