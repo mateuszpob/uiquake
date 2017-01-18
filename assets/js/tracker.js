@@ -189,7 +189,7 @@ Tracker.prototype.initCanvasAndBackground = function (one_step, noFirst) {
         inst.tracker_cursor.style.position = 'absolute';
         inst.tracker_cursor.style.width = 90;
         inst.tracker_cursor.style.height = 90;
-        inst.tracker_cursor.style.background = 'url(http://127.0.0.1:1337/images/mouse-crs.png)';
+        inst.tracker_cursor.style.background = 'url(/images/mouse-crs.png)';
         inst.tracker_cursor.style['background-size'] = 'contain';
         inst.tracker_cursor.style['z-index'] = 2147483647;
 

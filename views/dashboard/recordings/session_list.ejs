@@ -54,20 +54,21 @@
     integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
 crossorigin="anonymous"></script>
 <script>
-    function removeTracking (e, data){
+    function removeTracking(e, data) {
         var http = new XMLHttpRequest();
         var url = "/dashboard/remove-tracking/";
         var params = "tracker_id=" + data;
         http.open("POST", url, true);
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        http.onreadystatechange = function() {
-            if(http.readyState == 4 && http.status == 200) {
+        http.onreadystatechange = function () {
+            if (http.readyState == 4 && http.status == 200) {
                 window.location.reload();
             }
         }
         http.send(params);
-    };
-        
+    }
+    ;
+
     $(document).ready(function () {
         $('#example').DataTable({
             "ajax": {
@@ -111,8 +112,8 @@ crossorigin="anonymous"></script>
                     "render": function (data, type, row) {
                         var url = "/dashboard/display-tracking/" + data
                         var url_del = "/dashboard/remove-tracking/" + data
-                        return '<button class="btn btn-danger btn-rounded btn-condensed btn-sm edit pull-right" onclick="javascript:removeTracking(e,data)">Delete</button>'
-                        + '<button class="btn btn-default btn-rounded btn-condensed btn-sm edit pull-right" onclick="window.location=\'' + url + '\'">Play</button>';
+                        return '<button class="btn btn-danger btn-rounded btn-condensed btn-sm edit pull-right" onclick="javascript:removeTracking(this.event, \'' + data + '\')">Delete</button>'
+                                + '<button class="btn btn-default btn-rounded btn-condensed btn-sm edit pull-right" onclick="window.location=\'' + url + '\'">Play</button>';
 
                     },
                 }
@@ -121,9 +122,9 @@ crossorigin="anonymous"></script>
             //ordering: true,
             //order:[[3, "desc"]]
         });
-        
-        
-        
+
+
+
     });
 
 </script> 
