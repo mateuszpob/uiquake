@@ -166,32 +166,32 @@ TrackerClient.prototype.getBackground = function () {
 
 
 
-TrackerClient.prototype.getSessionId = function (cname) {
+TrackerClient.prototype.getSessionId = function () { 
+    var cname = "tracker_sid";
     var name = cname + "=";
     var ca = document.cookie.split(';');
     for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) === ' ') {
+        while (c.charAt(0) == ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) === 0) {
+        if (c.indexOf(name) == 0) {
             return c.substring(name.length, c.length);
         }
     }
     
     // Jeśli nie ma ciastka to ustaw nowe ciastko
-    var cname = "tracker_sid";
     var new_session_id = Array(40 + 1).join((Math.random().toString(36) + '00000000000000000').slice(2, 18)).slice(0, 40);
     var d = new Date();
     d.setTime(d.getTime() + (this.session_exp_days*24*60*60*1000)); // dni
     //    d.setTime(d.getTime() + (exdays * 60 * 1000)); // minuty
     var expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + new_session_id + "; " + expires;
-    
+    console.log('Zakladam nowe ciacho: '+new_session_id)
     return new_session_id;
 };
 
-var init = function () { 
+var init = function () {
     if(!uib_ukey)
         return;
     
@@ -204,6 +204,8 @@ var init = function () {
     var body = document.body;
     inst.time_start = Date.now();
     inst.socket = io.connect('http://85.255.15.162');
+    
+    //inst.socket = io.connect('http://127.0.0.1:8080');
 
 //    inst.socket.on('connect_error', function () {
 //        console.log('Connection Error 44');
