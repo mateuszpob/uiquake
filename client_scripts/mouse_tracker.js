@@ -10,7 +10,7 @@ var TrackerClient = function () {
     this.scroll_stack_interval = null;
 
     this.cookie_name = 'tracker_sid';
-    this.session_exp_days = 1;
+    this.session_exp_days = 365;
     this.socket = null;
 
     this.time_start;
@@ -145,39 +145,6 @@ TrackerClient.prototype.sendInitData = function (html) {
 };
 
 
-
-TrackerClient.prototype.setCookie = function (cname, cvalue, exdays) {
-    var d = new Date();
-//    d.setTime(d.getTime() + (exdays*24*60*60*1000)); // dni
-    d.setTime(d.getTime() + (exdays * 60 * 1000)); // minuty
-    var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
-};
-
-TrackerClient.prototype.getCookie = function (cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-};
-
-TrackerClient.prototype.getSessionId = function () {
-    var sid = this.getCookie('tracker_sid');
-    if (sid !== "")
-        return sid;
-    var new_sid = Array(40 + 1).join((Math.random().toString(36) + '00000000000000000').slice(2, 18)).slice(0, 40);
-    this.setCookie("tracker_sid", new_sid, this.session_exp_days);
-    return new_sid;
-};
-
 TrackerClient.prototype.getBackground = function () {
 
     var last_html = new XMLSerializer().serializeToString(document.documentElement);
@@ -185,6 +152,43 @@ TrackerClient.prototype.getBackground = function () {
     last_html = last_html.replace(/(&lt;)/g,"<").replace(/(&gt;)/g,">").replace(/(&amp;)/g,"&").replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "");
     
     return last_html;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+TrackerClient.prototype.getSessionId = function (cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    
+    // Jeśli nie ma ciastka to ustaw nowe ciastko
+    var cname = "tracker_sid";
+    var new_session_id = Array(40 + 1).join((Math.random().toString(36) + '00000000000000000').slice(2, 18)).slice(0, 40);
+    var d = new Date();
+    d.setTime(d.getTime() + (this.session_exp_days*24*60*60*1000)); // dni
+    //    d.setTime(d.getTime() + (exdays * 60 * 1000)); // minuty
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + new_session_id + "; " + expires;
+    
+    return new_session_id;
 };
 
 var init = function () {

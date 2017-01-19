@@ -59,21 +59,6 @@ module.exports = {
                 return response.end('', 'utf-8');
             }
         });
-    },
-
-    /*
-     * Zwraca socket.io.min.js 1.4.5
-     */
-//    getClientSocketScript: function (req, response) {
-//        fs.readFile('./client_scripts/socket.io.min.js', function (error, content) {
-//            if (error) {
-//                response.writeHead(500);
-//                response.end();
-//            } else {
-//                response.writeHead(200, {'Content-Type': 'text/html'});
-//                response.end(content, 'utf-8');
-//            }
-//        });
-//    }
+    }
 };
 

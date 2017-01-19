@@ -49,7 +49,7 @@ module.exports = {
         params.email = req.param('email');
         params.username = req.param('username');
         params.password = req.param('password');
-        params.secret = sha1(new Date().getTime());
+        params.secret = sha1(new Date().getTime()+'4wina');
         params.sites = [{url: url, active: true, secret: sha1(url + 'dupa7')}];
 
         User.create(params).exec(function (err, user) {
