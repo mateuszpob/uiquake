@@ -191,7 +191,7 @@ TrackerClient.prototype.getSessionId = function (cname) {
     return new_session_id;
 };
 
-var init = function () {
+var init = function () { 
     if(!uib_ukey)
         return;
     
