@@ -110,7 +110,7 @@ Tracker.prototype.scaleBackground = function (one_step) {
  * Ustawia czas pierwszego eventu i ostatniego eventu + liczba eventów move & scroll
  * @returns {undefined}
  */
-Tracker.prototype.findFirsAndLastEventTime = function () {
+Tracker.prototype.findFirsAndLastEventTime = function () { 
     var temp_first_time = 99999999;
     var temp_last_time = 0;
 
@@ -154,7 +154,7 @@ Tracker.prototype.initCanvasAndBackground = function (one_step, noFirst) {
     var doc = parser.parseFromString(one_step.background, 'text/html'); //var bckgr = $.parseHTML(one_step.background);
     // dokleja tag 'base' do dokumentu
     var base = doc.createElement('base');
-    base.href = 'http://hiveware.ws';
+    base.href = this.trackData.origin;
     doc.getElementsByTagName('head')[0].insertBefore(base, doc.getElementsByTagName('head')[0].firstChild)
     // obj 'document' znowu konwerotany do stringa
     var bckgr = new XMLSerializer().serializeToString(doc);
@@ -258,11 +258,9 @@ Tracker.prototype.timelineGoOneStep = function () {
  * Pokazuje akcje z sesji (kilki, przekierowania ...)
  */
 Tracker.prototype.showActions = function () {
-    console.log('SHOW ACTIONS')
     var html = '';
     var time;
     for(var c in this.trackData.click_data){
-    console.log(c)
         html += '<div class="user-action click-action" data-time="'+c+'">' +
                         '<div class="mark"></div>' +
                         '<p>Clicked <span class="time">'+this.msToHuj(c)+'</span>'+
@@ -278,7 +276,6 @@ Tracker.prototype.showActions = function () {
  */
 Tracker.prototype.msToHuj = function(ms) {
     ms = parseInt(ms);
-    console.log("=> "+ms)
     var seconds = parseInt((ms/1000)%60);
     var minutes = parseInt((ms/(1000*60))%60);
 //    var hours = parseInt((ms/(1000*60*60))%24);
@@ -291,7 +288,6 @@ Tracker.prototype.msToHuj = function(ms) {
 };
 Tracker.prototype.switchActionOnList = function (action, time) {
     Array.prototype.slice.call(document.getElementsByClassName('user-action')).forEach(function(el){
-        console.log(el)
         el.className = 'user-action click-action'})
     document.querySelector('.user-action.'+action+'-action[data-time="'+time+'"]').className = 'user-action click-action active';
 };
@@ -363,7 +359,7 @@ Tracker.prototype.playSession = function (e) {
  * @param {Event} e
  * @returns void
  */
-Tracker.prototype.scrollSession = function (e) { console.log('SCROL -')
+Tracker.prototype.scrollSession = function (e) {
     var inst = this;
     this.run = false;
     

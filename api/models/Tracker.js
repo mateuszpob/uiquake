@@ -14,19 +14,21 @@ module.exports = {
         tracking_data: {type: 'json'}           // dane trackingowe
     },
     /*
-     * Tu przylatują dane przez sockety. Dodajemy do istniejącej sesji, albo tworzy nową jeśli takiej nie ma.
+     * Tu przylatują dane przez socket. Dodajemy do istniejącej sesji, albo tworzy nową jeśli takiej nie ma.
      */
     insertTrackData: function (track_data) {
+        
+        var session_delay_time = 10; // [s]
         Tracker.findOne({
             session_id: track_data.session_id,
             app_key: track_data.app_key,
-            // session_started_at: track_data.session_started_at
+            last_data_received_at: {$gt: track_data.send_at - session_delay_time * 1000}
         }).exec(function (err, obj) {
             if (obj) {
                 
                 var time_offset = Math.round((track_data.session_started_at - obj.session_started_at) / 10) * 10;
-                console.log(time_offset)
-
+                
+                // Wszystkie eventy leca tu
                 for (var attrname in track_data[track_data.type]) {
                     if(track_data[track_data.type][attrname])
                         obj[track_data.type]['' + parseInt(parseInt(time_offset) + parseInt(attrname))] = track_data[track_data.type][attrname];
@@ -35,7 +37,6 @@ module.exports = {
                 if (track_data.type === 'init') {
                     var background = track_data.background;
 
-                    console.log('================== Jaaaaazdaaa z obiektem!: ' + track_data.type);
                     obj.background_data['' + parseInt(time_offset)] = {
                         background: background,
                         viewport_width: track_data.viewport_width,
@@ -44,9 +45,11 @@ module.exports = {
                         document_height: track_data.document_height,
                     }
                 }
+                obj.last_data_received_at = track_data.send_at;
                 obj.save();
                 
             } else {
+                console.log('Tworze sesje: '+track_data.session_id);
                 //@todo sprawdzanie czy jest taki user zarejestrowany
                 var background = track_data.background;
 
@@ -55,6 +58,7 @@ module.exports = {
                     app_key: track_data.app_key,
                     origin: track_data.origin,
                     session_started_at: track_data.session_started_at,
+                    last_data_received_at: track_data.send_at,
 
                     move_data: {},
                     scroll_data: {},

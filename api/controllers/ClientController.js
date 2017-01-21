@@ -18,20 +18,12 @@ module.exports = {
         var client_secret = req.param('client_secret');
 
         User.findOne({secret: client_secret}).exec(function (err, user) {
-//            console.log('====================== > ' + client_secret)
-            console.log(req.headers, user)
             if (user) {
                 
                 var referrer = req.headers.referer.replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0]
                 user.sites.forEach(function (site) {
-//                    console.log(site)
 //                    console.log(req.headers)
-//                    console.log(sha1(referrer + 'dupa7'), referrer, user)
-
-
-
                     if (sha1(referrer + 'dupa7') === site.secret) {
-                        console.log('Znalas ja ====>');
                         fs.readFile('./client_scripts/mouse_tracker.js', function (error, tracker_script) {
                             if (!error) {
                                 fs.readFile('./client_scripts/socket.io.min.js', function (error, socket_script) {

@@ -102,7 +102,6 @@ TrackerClient.prototype.onClickMe = function (e) {
         target_id: e.target.id,
         target_class: e.target.className,
     };
-    console.log(click)
     this.sendData('click_data', click)
 };
 
@@ -112,6 +111,7 @@ TrackerClient.prototype.sendData = function (type, to_send) {
         points_data['session_id'] = this.session_id;
         points_data['app_key'] = this.uib_ukey;
         points_data['session_started_at'] = this.time_start;
+        points_data['send_at'] = new Date().getTime();
         points_data['type'] = type;
         points_data['origin'] = window.location.origin;
         points_data[type] = to_send;
@@ -130,6 +130,7 @@ TrackerClient.prototype.sendInitData = function (html) {
         session_id: this.session_id,
         app_key: this.uib_ukey,
         session_started_at: this.time_start,
+        send_at: new Date().getTime(),
         type: 'init',
         viewport_width: window.innerWidth,
         viewport_height: window.innerHeight,
@@ -148,9 +149,9 @@ TrackerClient.prototype.sendInitData = function (html) {
 TrackerClient.prototype.getBackground = function () {
 
     var last_html = new XMLSerializer().serializeToString(document.documentElement);
-      
-    last_html = last_html.replace(/(&lt;)/g,"<").replace(/(&gt;)/g,">").replace(/(&amp;)/g,"&").replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "");
-    
+
+    last_html = last_html.replace(/(&lt;)/g, "<").replace(/(&gt;)/g, ">").replace(/(&amp;)/g, "&").replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "");
+
     return last_html;
 };
 
@@ -158,54 +159,66 @@ TrackerClient.prototype.getBackground = function () {
 
 
 
+/*
+ * UStawia i odczytuje cookiesy, tez JSON
+ */
+TrackerClient.prototype.cookie = {
 
+    set: function (name, value, days) {
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            var expires = "; expires=" + date.toGMTString();
+        } else
+            var expires = "";
+        document.cookie = name + "=" + JSON.stringify(value) + expires + "; path=/";
+    },
 
+    get: function (name) {
+        var nameEQ = name + "=",
+                ca = document.cookie.split(';');
 
-
-
-
-
-
-TrackerClient.prototype.getSessionId = function () { 
-    var cname = "tracker_sid";
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) === ' ')
+                c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0)
+                return  JSON.parse(c.substring(nameEQ.length, c.length));
         }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
+
+        return null;
     }
-    
-    // Jeśli nie ma ciastka to ustaw nowe ciastko
-    var new_session_id = Array(40 + 1).join((Math.random().toString(36) + '00000000000000000').slice(2, 18)).slice(0, 40);
-    var d = new Date();
-    d.setTime(d.getTime() + (this.session_exp_days*24*60*60*1000)); // dni
-    //    d.setTime(d.getTime() + (exdays * 60 * 1000)); // minuty
-    var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + new_session_id + "; " + expires;
-    console.log('Zakladam nowe ciacho: '+new_session_id)
-    return new_session_id;
+
+}
+
+TrackerClient.prototype.getSessionId = function () {
+    var sid = this.cookie.get('uiqsid');
+    if (sid !== null)
+        return sid;
+    var new_sid = Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7);
+    console.log('ZAKLADAM CIACHO: ' + new_sid)
+    this.cookie.set("uiqsid", new_sid, this.session_exp_days);
+    console.log('SSID: ' + new_sid)
+    return new_sid;
 };
 
 var init = function () {
-    if(!uib_ukey)
+    console.log('COOKIE:');
+    console.log(document.cookie);
+    if (!uib_ukey)
         return;
-    
-    
-    console.log('Tracker Init: '+this.uib_ukey)
+
+
+//    console.log('Tracker Init: '+this.uib_ukey)
 
     var inst = new TrackerClient();
-    
+
     inst.uib_ukey = uib_ukey;
     var body = document.body;
     inst.time_start = Date.now();
-    inst.socket = io.connect('http://85.255.15.162');
-    
-    //inst.socket = io.connect('http://127.0.0.1:8080');
+//    inst.socket = io.connect('http://85.255.15.162');
+
+    inst.socket = io.connect('http://127.0.0.1:8080');
 
 //    inst.socket.on('connect_error', function () {
 //        console.log('Connection Error 44');
@@ -235,7 +248,7 @@ var init = function () {
     document.addEventListener('scroll', function (e) {
         inst.onScrollMe(e);
     });
-    
+
     document.addEventListener('click', function (e) {
         inst.onClickMe(e);
     });

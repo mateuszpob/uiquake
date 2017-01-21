@@ -29,15 +29,15 @@
                 <table id="example" class="display" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th>App Key</th>
-                            <th>id</th>
+                            <th>Domain</th>
+                            <th>session id</th>
                             <th>Created at</th>
                             <th> </th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>App Key</th>
+                            <th>Domain</th>
                             <th>id</th>
                             <th>Created at</th>
                             <th> </th>
@@ -49,11 +49,22 @@
         </div>     
         <!--End X-Panel-->
     </div>
-</div><script
-    src="https://code.jquery.com/jquery-1.12.4.min.js"
-    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
-crossorigin="anonymous"></script>
+</div>
 <script>
+    var tab;
+    var started = false;
+    
+    function reloadDt(){
+        if(!started){
+            setInterval(function(){
+                tab.ajax.reload();
+                console.log('sdddddddddddddddddd')
+            }, 3000);
+            started = true;
+        }
+            
+    }
+    
     function removeTracking(e, data) {
         var http = new XMLHttpRequest();
         var url = "/dashboard/remove-tracking/";
@@ -62,7 +73,8 @@ crossorigin="anonymous"></script>
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         http.onreadystatechange = function () {
             if (http.readyState == 4 && http.status == 200) {
-                window.location.reload();
+                //window.location.reload();
+                tab.ajax.reload();
             }
         }
         http.send(params);
@@ -70,20 +82,20 @@ crossorigin="anonymous"></script>
     ;
 
     $(document).ready(function () {
-        $('#example').DataTable({
+        tab = $('#example').DataTable({
             "ajax": {
                 "url": "/dashboard/get-sessions-list",
                 "type": "POST"
             },
             "columns": [
-                {"data": "app_key"},
+                {"data": "origin"},
                 {"data": "session_id"},
                 {
                     "orderable": true,
                     "data": "session_started_at",
                     "render": function (data, type, row) {
                         var date = new Date(data);
-                        return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + '&nbsp;&nbsp;&nbsp;' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2)
+                        return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + '&nbsp;&nbsp;&nbsp;' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)
                     },
                 },
 //                {
@@ -110,6 +122,7 @@ crossorigin="anonymous"></script>
                     "orderable": false,
                     "data": "id",
                     "render": function (data, type, row) {
+                        reloadDt()
                         var url = "/dashboard/display-tracking/" + data
                         var url_del = "/dashboard/remove-tracking/" + data
                         return '<button class="btn btn-danger btn-rounded btn-condensed btn-sm edit pull-right" onclick="javascript:removeTracking(this.event, \'' + data + '\')">Delete</button>'

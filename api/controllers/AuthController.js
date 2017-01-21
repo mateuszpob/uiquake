@@ -14,7 +14,6 @@ module.exports = {
         res.view();
     },
     process: function (req, res) {
-        console.log('Passport 554')
         passport.authenticate('local', function (err, user, info) {
             if ((err) || (!user)) {
                 return res.redirect('/login');
