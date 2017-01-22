@@ -216,9 +216,9 @@ var init = function () {
     inst.uib_ukey = uib_ukey;
     var body = document.body;
     inst.time_start = Date.now();
-//    inst.socket = io.connect('http://85.255.15.162');
+    inst.socket = io.connect('http://85.255.15.162');
 
-    inst.socket = io.connect('http://127.0.0.1:8080');
+//    inst.socket = io.connect('http://127.0.0.1:8080');
 
 //    inst.socket.on('connect_error', function () {
 //        console.log('Connection Error 44');
