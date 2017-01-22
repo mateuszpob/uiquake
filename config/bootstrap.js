@@ -21,12 +21,12 @@ module.exports.bootstrap = function (cb) {
     // Tracking data handler
     sails.io.on('connect', function (socket) {
         var address = socket.handshake.headers.origin
-        if (address && address != 'http://127.0.0.1:1337' && address != 'http://127.0.0.1:1337/') {
-            console.log('Wait for data.');
-            socket.on('points_data', function (data) {
-                Tracker.insertTrackData(data);
-            });
-        }
+        var client_ip = socket.client.conn.remoteAddress.replace('::ffff:', '');
+        console.log('Wait for data from ' + client_ip);
+        socket.on('points_data', function (data) {
+            Tracker.insertTrackData(data, client_ip);
+        });
+        
 
     });
 

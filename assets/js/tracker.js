@@ -73,7 +73,7 @@ Tracker.prototype.init = function (tracker_id) {
             tracker_inst.scaleBackground(tracker_inst.trackData.background_data['10']);
             // ustaw dane do rysowania, eventy, background ... 
             tracker_inst.initCanvasAndBackground(tracker_inst.trackData.background_data['10']);
-
+            
 
         }
     };
@@ -137,7 +137,14 @@ Tracker.prototype.findFirsAndLastEventTime = function () {
     this.move_data_legth = this.trackData.move_data.length;
     this.scroll_data_legth = this.trackData.scroll_data.length;
 
+    if (this.frstTimelineStart) {
+        var inst = this;
+        var timeline_width = document.getElementById('trck-timeline').offsetWidth + 11;
 
+        this.step_length = timeline_width / this.last_event_time * 10;
+        console.log('asdasdasdasdasas'+        this.step_length)
+        this.frstTimelineStart = false;
+    }
 };
 
 /*
@@ -203,7 +210,7 @@ Tracker.prototype.initCanvasAndBackground = function (one_step, noFirst) {
         if(!noFirst)
             inst.time_start = Date.now() - inst.time_temp;
 
-        inst.initTimeline();
+//        inst.initTimeline();
         inst.runTimer();
 
     };
@@ -236,14 +243,8 @@ Tracker.prototype.setCursorPosition = function () {
  * Inicjuje linie czasu, wylicza długość jednego kroku w pikselach
  */
 Tracker.prototype.initTimeline = function () {
-    if (this.frstTimelineStart) {
-        var inst = this;
-        var timeline_width = document.getElementById('trck-timeline').offsetWidth + 11;
-
-        this.step_length = timeline_width / this.last_event_time * 10;
-        
-        this.frstTimelineStart = false;
-    }
+    
+    
 };
 /*
  * Przesuwa pasek progresu o wyliczoną liczbę pikseli,
@@ -259,6 +260,8 @@ Tracker.prototype.timelineGoOneStep = function () {
  */
 Tracker.prototype.showActions = function () {
     var html = '';
+    var mark = '';
+    var left = 0;
     var time;
     for(var c in this.trackData.click_data){
         html += '<div class="user-action click-action" data-time="'+c+'">' +
@@ -266,7 +269,13 @@ Tracker.prototype.showActions = function () {
                         '<p>Clicked <span class="time">'+this.msToHuj(c)+'</span>'+
                         '&nbsp;<span class="actag">'+this.trackData.click_data[c].target_tag+'</span></p>' +
                     '</div>';
-        
+            console.log(this.step_length, c)
+        left = 10 + (this.step_length * c / 10);    
+            
+        mark = document.createElement('div');
+        mark.className = 'action-mark click';
+        mark.style.left = left + 'px';
+        document.getElementById('trck-progress').appendChild(mark);
     }
     document.getElementById('actions-container').insertAdjacentHTML('beforeend', html);
 };

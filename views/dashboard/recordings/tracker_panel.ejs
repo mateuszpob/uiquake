@@ -208,6 +208,17 @@
     .click-action > .mark{
         background-color: #0f0;
     }
+    .action-mark{
+            width: 6px;
+            height: 15px;
+            position: absolute;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            margin-top: -2px;
+    }
+    .action-mark.click{
+        background-color: #0f0;
+    }
 </style>
 
 
@@ -237,7 +248,9 @@
                     <div id="trck-play-session" class="pause"></div>
                     <div id="trck-time">120:59</div>
                     <div id="trck-timeline">
-                        <div id="trck-progress"></div>
+                        <div id="trck-progress">
+                            <div class="action-mark"></div>
+                        </div>
                     </div>
                 </div>
             </div>

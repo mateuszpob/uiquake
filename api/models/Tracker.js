@@ -16,7 +16,7 @@ module.exports = {
     /*
      * Tu przylatują dane przez socket. Dodajemy do istniejącej sesji, albo tworzy nową jeśli takiej nie ma.
      */
-    insertTrackData: function (track_data) {
+    insertTrackData: function (track_data, client_ip) {
         
         var session_delay_time = 10; // [s]
         Tracker.findOne({
@@ -59,6 +59,7 @@ module.exports = {
                     origin: track_data.origin,
                     session_started_at: track_data.session_started_at,
                     last_data_received_at: track_data.send_at,
+                    client_ip: client_ip,
 
                     move_data: {},
                     scroll_data: {},
