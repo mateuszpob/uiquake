@@ -203,9 +203,9 @@ TrackerClient.prototype.getSessionId = function () {
 };
 
 var init = function () {
-    console.log('COOKIE:');
-    console.log(document.cookie);
-    if (!uib_ukey)
+    
+    // te zmienne są doklejane na serwerze do tego skryptu przed wysłąniem klientowi
+    if (!uib_ukey || !socket_url)
         return;
 
 
@@ -216,7 +216,7 @@ var init = function () {
     inst.uib_ukey = uib_ukey;
     var body = document.body;
     inst.time_start = Date.now();
-    inst.socket = io.connect('http://85.255.15.162');
+    inst.socket = io.connect(socket_url);
 
 //    inst.socket = io.connect('http://127.0.0.1:8080');
 

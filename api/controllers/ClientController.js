@@ -16,7 +16,7 @@ module.exports = {
     getClientTrackingScript: function (req, response) {
 
         var client_secret = req.param('client_secret');
-
+        
         User.findOne({secret: client_secret}).exec(function (err, user) {
             if (user) {
                 
@@ -33,6 +33,7 @@ module.exports = {
                                     } else {
                                         var result_script = socket_script;
                                         result_script += ' var uib_ukey = "' + site.secret + '"; ';
+                                        result_script += ' var socket_url = "' + sails.getBaseUrl() + '"; ';
                                         result_script += tracker_script;
 
                                         response.writeHead(200, {'Content-Type': 'text/html'});

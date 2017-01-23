@@ -18,7 +18,7 @@ module.exports = {
      */
     insertTrackData: function (track_data, client_ip) {
         
-        var session_delay_time = 10; // [s]
+        var session_delay_time = 4; // [s]
         Tracker.findOne({
             session_id: track_data.session_id,
             app_key: track_data.app_key,
