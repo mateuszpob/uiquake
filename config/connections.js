@@ -77,8 +77,9 @@ module.exports.connections = {
 
     huj: {
         adapter: 'sails-mongo',
-url: 'mongodb://uiquake:qweasd123A@85.255.15.162:27017/uiquake'
+//url: 'mongodb://uiquake:qweasd123A@85.255.15.162:27017/uiquake'
 //url: 'mongodb://localhost:27017/sails'
+url: process.env.CONNECTION_STRING
     },
 
     /***************************************************************************
