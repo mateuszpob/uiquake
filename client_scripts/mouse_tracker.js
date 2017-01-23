@@ -196,9 +196,7 @@ TrackerClient.prototype.getSessionId = function () {
     if (sid !== null)
         return sid;
     var new_sid = Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7);
-    console.log('ZAKLADAM CIACHO: ' + new_sid)
     this.cookie.set("uiqsid", new_sid, this.session_exp_days);
-    console.log('SSID: ' + new_sid)
     return new_sid;
 };
 
@@ -216,8 +214,8 @@ var init = function () {
     inst.uib_ukey = uib_ukey;
     var body = document.body;
     inst.time_start = Date.now();
-    inst.socket = io.connect(socket_url+':8080');
-
+    inst.socket = io.connect(socket_url.replace(':8080', '')+':8080');
+//console.log(">>", socket_url)
 //    inst.socket = io.connect('http://127.0.0.1:8080');
 
 //    inst.socket.on('connect_error', function () {
