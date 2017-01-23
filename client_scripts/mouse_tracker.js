@@ -216,7 +216,7 @@ var init = function () {
     inst.uib_ukey = uib_ukey;
     var body = document.body;
     inst.time_start = Date.now();
-    inst.socket = io.connect(socket_url);
+    inst.socket = io.connect(socket_url+':8080');
 
 //    inst.socket = io.connect('http://127.0.0.1:8080');
 
