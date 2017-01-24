@@ -13,7 +13,7 @@ module.exports.bootstrap = function (cb) {
 
 //    if (process.argv[2]) {
 //        var port = parseInt(process.argv[2]);
-//        sails.config.port = port;
+//        sails.config.port = port; 
 //    }
 
     sails.config.port = 8080;
