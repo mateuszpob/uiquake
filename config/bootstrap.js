@@ -20,7 +20,7 @@ module.exports.bootstrap = function (cb) {
 
     // Tracking data handler
     sails.io.on('connect', function (socket) {
-        var address = socket.handshake.headers.origin
+        var address = socket.handshake.address
 //        var client_ip = socket.request.connection.remoteAddress;
         console.log('Wait for data from ' + address);
         socket.on('points_data', function (data) {
