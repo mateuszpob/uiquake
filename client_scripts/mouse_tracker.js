@@ -215,6 +215,7 @@ var init = function () {
     var body = document.body;
     inst.time_start = Date.now();
     var surl = (socket_url.replace(':8080', '')+':8080').replace('http://', '');
+    var surl = socket_url.replace('http://', '');
     surl = 'http://'+surl;
     console.log("Connect to: "+surl)
     inst.socket = io.connect('http://'+surl);
