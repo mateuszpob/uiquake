@@ -218,7 +218,8 @@ var init = function () {
     var surl = socket_url.replace('http://', '');
     surl = 'http://'+surl;
     console.log("Connect to: "+surl)
-    inst.socket = io.connect('http://'+surl);
+//    inst.socket = io.connect('http://'+surl);
+    inst.socket = io.connect('http://85.255.15.162');
 //console.log(">>", socket_url)
 //    inst.socket = io.connect('http://127.0.0.1:8080');
 
