@@ -214,7 +214,8 @@ var init = function () {
     inst.uib_ukey = uib_ukey;
     var body = document.body;
     inst.time_start = Date.now();
-    inst.socket = io.connect(socket_url.replace(':8080', '')+':8080');
+    var surl = (socket_url.replace(':8080', '')+':8080').replace('http://', '');
+    inst.socket = io.connect('http://'+surl);
 //console.log(">>", socket_url)
 //    inst.socket = io.connect('http://127.0.0.1:8080');
 
