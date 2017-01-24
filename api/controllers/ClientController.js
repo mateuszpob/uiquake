@@ -33,7 +33,7 @@ module.exports = {
                                     } else {
                                         var result_script = socket_script;
                                         result_script += ' var uib_ukey = "' + site.secret + '"; ';
-                                        result_script += ' var socket_url = "' + sails.getBaseUrl() + '"; ';
+                                        result_script += ' var socket_url = "' + req.host + '"; ';
                                         result_script += tracker_script;
 
                                         response.writeHead(200, {'Content-Type': 'text/html'});
