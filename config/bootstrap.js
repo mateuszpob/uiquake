@@ -21,10 +21,10 @@ module.exports.bootstrap = function (cb) {
     // Tracking data handler
     sails.io.on('connect', function (socket) {
         var address = socket.handshake.headers.origin
-        var client_ip = socket.request.connection.remoteAddress;
-        console.log('Wait for data from ' + client_ip);
+//        var client_ip = socket.request.connection.remoteAddress;
+//        console.log('Wait for data from ' + client_ip);
         socket.on('points_data', function (data) {
-            Tracker.insertTrackData(data, client_ip);
+            Tracker.insertTrackData(data, '123');
         });
         
 
