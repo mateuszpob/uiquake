@@ -30,7 +30,13 @@ module.exports = {
         if(!req.user)
             return res.json({error: 'unlogged'});
         
-        var obj = Tracker.find().sort('session_started_at DESC').exec(function (err, obj) {
+        var secrets = [];
+        req.user.sites.forEach(function(e){
+            secrets.push(e.secret);
+        });
+        
+        
+        var obj = Tracker.find({'move_data':{$not: {$size: 0}}}).sort('session_started_at DESC').exec(function (err, obj) {
             return res.json({data: obj});
         });
     },

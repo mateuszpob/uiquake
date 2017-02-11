@@ -109,7 +109,8 @@ TrackerClient.prototype.sendData = function (type, to_send) {
     if (to_send) {
         var points_data = [];
         points_data['session_id'] = this.session_id;
-        points_data['app_key'] = this.uib_ukey;
+        points_data['uib_site_secret'] = this.uib_site_secret;
+        points_data['uib_client_secret'] = this.uib_client_secret;
         points_data['session_started_at'] = this.time_start;
         points_data['send_at'] = new Date().getTime();
         points_data['type'] = type;
@@ -128,7 +129,8 @@ TrackerClient.prototype.sendData = function (type, to_send) {
 TrackerClient.prototype.sendInitData = function (html) {
     var points_data = {
         session_id: this.session_id,
-        app_key: this.uib_ukey,
+        uib_site_secret: this.uib_site_secret,
+        uib_client_secret: this.uib_client_secret,
         session_started_at: this.time_start,
         send_at: new Date().getTime(),
         type: 'init',
@@ -203,25 +205,24 @@ TrackerClient.prototype.getSessionId = function () {
 var init = function () {
     
     // te zmienne są doklejane na serwerze do tego skryptu przed wysłąniem klientowi
-    if (!uib_ukey || !socket_url)
+    if (!uib_site_secret || !uib_client_secret)
         return;
 
 
-//    console.log('Tracker Init: '+this.uib_ukey)
-
     var inst = new TrackerClient();
 
-    inst.uib_ukey = uib_ukey;
+    inst.uib_site_secret = uib_site_secret;
+    inst.uib_client_secret = uib_client_secret;
     var body = document.body;
     inst.time_start = Date.now();
-    var surl = (socket_url.replace(':8080', '')+':8080').replace('http://', '');
-    var surl = socket_url.replace('http://', '');
+    var surl = (uib_site_secret.replace(':8080', '')+':8080').replace('http://', '');
+    var surl = uib_site_secret.replace('http://', '');
     surl = 'http://'+surl;
-    console.log("Connect to: "+surl)
+    console.log("Connect to: "+surl);
 //    inst.socket = io.connect('http://'+surl);
-    inst.socket = io.connect('http://85.255.15.162');
+//    inst.socket = io.connect('http://85.255.15.162');
 //console.log(">>", socket_url)
-//    inst.socket = io.connect('http://127.0.0.1:8080');
+    inst.socket = io.connect('http://127.0.0.1:8080');
 
 //    inst.socket.on('connect_error', function () {
 //        console.log('Connection Error 44');

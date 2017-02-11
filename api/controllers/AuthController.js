@@ -48,8 +48,8 @@ module.exports = {
         params.email = req.param('email');
         params.username = req.param('username');
         params.password = req.param('password');
-        params.secret = sha1(new Date().getTime()+'4wina');
-        params.sites = [{url: url, active: true, secret: sha1(url + 'dupa7')}];
+        params.secret = sha1(Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7) + '4wina');
+        params.sites = [{url: url, active: true, secret: sha1(Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7) + 'dupa7')}];
 
         User.create(params).exec(function (err, user) {
             req.login(user, function (err) {

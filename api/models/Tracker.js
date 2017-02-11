@@ -17,20 +17,21 @@ module.exports = {
      * Tu przylatują dane przez socket. Dodajemy do istniejącej sesji, albo tworzy nową jeśli takiej nie ma.
      */
     insertTrackData: function (track_data, client_ip) {
-        
+
         var session_delay_time = 4; // [s]
         Tracker.findOne({
             session_id: track_data.session_id,
-            app_key: track_data.app_key,
+            uib_client_secret: track_data.uib_client_secret,
+            uib_site_secret: track_data.uib_site_secret,
             last_data_received_at: {$gt: track_data.send_at - session_delay_time * 1000}
         }).exec(function (err, obj) {
             if (obj) {
-                
+
                 var time_offset = Math.round((track_data.session_started_at - obj.session_started_at) / 10) * 10;
-                
+
                 // Wszystkie eventy leca tu
                 for (var attrname in track_data[track_data.type]) {
-                    if(track_data[track_data.type][attrname])
+                    if (track_data[track_data.type][attrname])
                         obj[track_data.type]['' + parseInt(parseInt(time_offset) + parseInt(attrname))] = track_data[track_data.type][attrname];
                 }
                 // Tu backgroundy lecą
@@ -47,15 +48,16 @@ module.exports = {
                 }
                 obj.last_data_received_at = track_data.send_at;
                 obj.save();
-                
+
             } else {
-                console.log('Tworze sesje: '+track_data.session_id);
+                console.log('Tworze sesje: ' + track_data.session_id);
                 //@todo sprawdzanie czy jest taki user zarejestrowany
                 var background = track_data.background;
 
                 Tracker.create({
                     session_id: track_data.session_id,
-                    app_key: track_data.app_key,
+                    uib_client_secret: track_data.uib_client_secret,
+                    uib_site_secret: track_data.uib_site_secret,
                     origin: track_data.origin,
                     session_started_at: track_data.session_started_at,
                     last_data_received_at: track_data.send_at,

@@ -16,6 +16,7 @@ module.exports = {
     getClientTrackingScript: function (req, response) {
 
         var client_secret = req.param('client_secret');
+        var site_secret = req.param('site_secret');
         
         User.findOne({secret: client_secret}).exec(function (err, user) {
             if (user) {
@@ -23,7 +24,7 @@ module.exports = {
                 var referrer = req.headers.referer.replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0]
                 user.sites.forEach(function (site) {
 //                    console.log(req.headers)
-                    if (sha1(referrer + 'dupa7') === site.secret) {
+                    if (site_secret === site.secret && site.url === referrer) {
                         fs.readFile('./client_scripts/mouse_tracker.js', function (error, tracker_script) {
                             if (!error) {
                                 fs.readFile('./client_scripts/socket.io.min.js', function (error, socket_script) {
@@ -32,7 +33,8 @@ module.exports = {
                                         return response.end('', 'utf-8');
                                     } else {
                                         var result_script = socket_script;
-                                        result_script += ' var uib_ukey = "' + site.secret + '"; ';
+                                        result_script += ' var uib_site_secret = "' + site.secret + '"; ';
+                                        result_script += ' var uib_client_secret = "' + client_secret + '"; ';
                                         result_script += ' var socket_url = "' + req.host + '"; ';
                                         result_script += tracker_script;
 
