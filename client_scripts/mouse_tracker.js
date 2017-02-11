@@ -127,6 +127,8 @@ TrackerClient.prototype.sendData = function (type, to_send) {
  * Wysyla dane inicjujące pierwszy obiekt sesji na serwerze
  */
 TrackerClient.prototype.sendInitData = function (html) {
+    var inst = this;
+    
     var points_data = {
         session_id: this.session_id,
         uib_site_secret: this.uib_site_secret,
@@ -144,9 +146,22 @@ TrackerClient.prototype.sendInitData = function (html) {
         move_data: {},
         scroll_data: {}
     }
-    this.socket.emit('points_data', points_data);
+   
+    // pobierz ip i info o kliencie z freegeoip
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open('GET', '//freegeoip.net/json/?callback=', true);
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4) {
+            if(xmlhttp.status == 200) {
+                console.log('sdddddddd')
+                points_data.client_info = JSON.parse(xmlhttp.responseText);
+                inst.socket.emit('points_data', points_data);
+             }
+        }
+    };
+    xmlhttp.send(null);
+    
 };
-
 
 TrackerClient.prototype.getBackground = function () {
 
