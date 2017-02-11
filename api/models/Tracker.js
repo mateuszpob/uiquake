@@ -46,6 +46,10 @@ module.exports = {
                         document_height: track_data.document_height,
                     }
                 }
+                if(track_data.type === 'client_info'){ console.log('client_info',track_data.data_client_info)
+                    obj.client_info = track_data.data_client_info;
+                }
+                
                 obj.last_data_received_at = track_data.send_at;
                 obj.save();
 

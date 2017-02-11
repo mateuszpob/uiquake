@@ -127,8 +127,6 @@ TrackerClient.prototype.sendData = function (type, to_send) {
  * Wysyla dane inicjujące pierwszy obiekt sesji na serwerze
  */
 TrackerClient.prototype.sendInitData = function (html) {
-    var inst = this;
-    
     var points_data = {
         session_id: this.session_id,
         uib_site_secret: this.uib_site_secret,
@@ -146,21 +144,35 @@ TrackerClient.prototype.sendInitData = function (html) {
         move_data: {},
         scroll_data: {}
     }
-   
-    // pobierz ip i info o kliencie z freegeoip
+    this.socket.emit('points_data', points_data);
+    
+    this.getClientInfo();
+};
+
+TrackerClient.prototype.getClientInfo = function () { console.log('sdsadsadasd')
+    var inst = this;
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open('GET', '//freegeoip.net/json/?callback=', true);
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {
             if(xmlhttp.status == 200) {
-                console.log('sdddddddd')
-                points_data.client_info = JSON.parse(xmlhttp.responseText);
-                inst.socket.emit('points_data', points_data);
+                
+                var points_data = [];
+                points_data['session_id'] = inst.session_id;
+                points_data['uib_site_secret'] = inst.uib_site_secret;
+                points_data['uib_client_secret'] = inst.uib_client_secret;
+                points_data['session_started_at'] = inst.time_start;
+                points_data['send_at'] = new Date().getTime();
+                points_data['type'] = 'client_info';
+                points_data['origin'] = window.location.origin;
+                points_data['data_client_info'] = JSON.parse(xmlhttp.responseText);
+        console.log('sssssssssssssser',points_data)
+                inst.socket.emit('points_data', Object.assign({}, points_data));
+                
              }
         }
     };
     xmlhttp.send(null);
-    
 };
 
 TrackerClient.prototype.getBackground = function () {
