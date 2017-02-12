@@ -20,7 +20,7 @@ module.exports = {
     /*
      * Maksymalna liczba nowych sesji jaka moze byc utworzona w czasie "allow_reload_minutes"
      */
-    max_user_count_per_allow_time: 5,
+    max_user_count_per_allow_time: 10,
     /*
      * Tworzy nowy obiekt sesji
      * 
@@ -28,34 +28,22 @@ module.exports = {
      * @returns {undefined}\
      */
     createNewSession: function (track_data) {
-        console.log('Tworze sesje: ' + track_data.session_id);
         var inst = this;
-        // znajdz usera i podbij mu licznik udzielonych dostepow
-        // 
+        
         User.findOne({
             secret: track_data.uib_client_secret
         }).exec(function (err, user) {
-//            user.sites.forEach(function (site) {
-//                if(site.secret === track_data.uib_site_secret){
-//                    site.last_data_received_date = new Date().getTime();
-//                }
-//            });
 
+            console.log('Czasy: ', user.clients_counter,  (new Date().getTime() - user.last_allow_time) / 1000)
             // Licznik przekroczony, ale czas do przełądowania minął. Przełąduj licznik i jazda dalej.
-            if(user.clients_counter > inst.max_user_count_per_allow_time && (new Date().getTime() - user.last_allow_time >= inst.allow_reload_minutes * 1000 * 60) ){
+            if(user.clients_counter >= inst.max_user_count_per_allow_time && (new Date().getTime() - user.last_allow_time >= inst.allow_reload_minutes * 1000 * 60) ){
                 user.clients_counter = 0;
                 user.last_allow_time = new Date().getTime();
             }
             // licznik przekroczony czas do przeladowania nie minął, nara.
-            else if(user.clients_counter > inst.max_user_count_per_allow_time){
-                return;
+            else if(user.clients_counter >= inst.max_user_count_per_allow_time){
+                return null;
             }
-                
-            user.clients_counter++;
-            
-            
-            user.save();
-            
             
             // Stworz nowy obiekt sesji trackingu
             Tracker.create({
@@ -81,7 +69,10 @@ module.exports = {
                     }}
 
             }).exec(function createCB(err, created) {
-                console.log('create new Object.')
+                // Po stworzeniu sesji podbij licznik clientow
+                user.clients_counter++;
+                user.save();
+                console.log('Stworzona sesja: ' + track_data.session_id);
             });
             
         });
@@ -125,7 +116,7 @@ module.exports = {
      */
     insertTrackData: function (track_data) {
         var inst = this;
-        var session_delay_time = 4; // [s]
+        var session_delay_time = 4; // [sekundy]
         Tracker.findOne({
             session_id: track_data.session_id,
             uib_client_secret: track_data.uib_client_secret,

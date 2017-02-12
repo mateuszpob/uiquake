@@ -150,13 +150,13 @@ TrackerClient.prototype.sendInitData = function (html) {
     this.getClientInfo();
 };
 
-TrackerClient.prototype.getClientInfo = function () { console.log('sdsadsadasd')
+TrackerClient.prototype.getClientInfo = function () { 
     var inst = this;
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open('GET', '//freegeoip.net/json/?callback=', true);
     xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4) {
-            if(xmlhttp.status == 200) {
+        if (xmlhttp.readyState === 4) {
+            if(xmlhttp.status === 200) {
                 
                 var points_data = [];
                 points_data['session_id'] = inst.session_id;
@@ -167,7 +167,7 @@ TrackerClient.prototype.getClientInfo = function () { console.log('sdsadsadasd')
                 points_data['type'] = 'client_info';
                 points_data['origin'] = window.location.origin;
                 points_data['data_client_info'] = JSON.parse(xmlhttp.responseText);
-        console.log('sssssssssssssser',points_data)
+                
                 inst.socket.emit('points_data', Object.assign({}, points_data));
                 
              }

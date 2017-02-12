@@ -15,7 +15,7 @@ module.exports = {
     /*
      * Maksymalna liczba nowych sesji jaka moze byc utworzona w czasie "allow_reload_minutes"
      */
-    max_user_count_per_allow_time: 5,
+    max_user_count_per_allow_time: 10,
     /*
      * Zwraca skrypty dla clienta
      * @param {type} req
@@ -23,37 +23,33 @@ module.exports = {
      */
     getClientTrackingScript: function (req, response) {
         var inst = this;
-        
         var client_secret = req.param('client_secret');
         var site_secret = req.param('site_secret');
         
         User.findOne({secret: client_secret}).exec(function (err, user) {
             if (user) {
-                
-                try{
-                    var client_locked = false;
-                    // sprawdz czy nie trzeba pierdolnąć locka
-                    if(user.clients_counter > inst.max_user_count_per_allow_time && (new Date().getTime() - user.last_allow_time < inst.allow_reload_minutes * 1000 * 60) ){
-                        client_locked = true;
-                    }
-                
-                    var referrer = req.headers.referer.replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0]
+                var client_locked = false;
+                // sprawdz czy nie trzeba pierdolnąć
+                console.log(user.clients_counter, new Date().getTime() - user.last_allow_time , inst.allow_reload_minutes * 1000 * 60);
+                if(user.clients_counter >= inst.max_user_count_per_allow_time && (new Date().getTime() - user.last_allow_time < inst.allow_reload_minutes * 1000 * 60) ){
+                    client_locked = true;
+                }
+                try{ 
+                    var referrer = req.headers.referer.replace('https://', '').replace('http://', '').replace(/\/$/g, '').split('/')[0];
                     user.sites.forEach(function (site) {
-    //                    console.log(req.headers)
-                        if (site_secret === site.secret && site.url === referrer) {
+                        if (site_secret === site.secret && site.url === referrer) { 
                             fs.readFile('./client_scripts/mouse_tracker.js', function (error, tracker_script) {
-                                if (!error) {
+                                if (!error) { 
                                     fs.readFile('./client_scripts/socket.io.min.js', function (error, socket_script) {
                                         if (error) {
-                                            response.writeHead(200, {'Content-Type': 'text/html'});
-                                            return response.end('', 'utf-8');
+                                            return inst.returnEmptyScript(response, 'Read script file error.');
                                         } else {
                                             var result_script = socket_script;
                                             result_script += ' var uib_site_secret = "' + site.secret + '"; ';
                                             result_script += ' var uib_client_secret = "' + client_secret + '"; ';
                                             result_script += ' var socket_url = "' + req.host + '"; ';
                                             if(client_locked){
-                                                result_script += 'var client_locked = true; ';
+                                                result_script += ' var client_locked = true; ';
                                             }
                                             result_script += tracker_script;
 
@@ -63,21 +59,25 @@ module.exports = {
                                     });
                                 }
                             });
+                        }else{
+                            return inst.returnEmptyScript(response, 'Invalid credentials. Site secret: ' + site_secret +  ', referrer: ' + referrer);
                         }
                     })
                 } catch (e) {
-                    console.log('['+ new Date() +'] Client script exception!', e);
-                    
-                    response.writeHead(200, {'Content-Type': 'text/html'});
-                    return response.end('console.log("Dupa.")', 'utf-8');
+                    return inst.returnEmptyScript(response, ['['+ new Date() +'] Client script error.', e]);
                 }
 
             } else {
-                // nie znalazlem usera
-                console.log('User not found. Secret: ' + client_secret);
-                response.writeHead(200, {'Content-Type': 'text/html'});
-                return response.end('', 'utf-8');
+                return inst.returnEmptyScript(response, 'User not found. Secret: ' + client_secret);
             }
         });
+    },
+    /*
+     * Zwraca pusty skrypw w razie bledow i loguje bledy.
+     */
+    returnEmptyScript(response, params) {
+        console.log(params);
+        response.writeHead(200, {'Content-Type': 'text/html'});
+        return response.end('', 'utf-8');
     }
 };
