@@ -27,6 +27,7 @@ module.exports = {
                     site.last_data_received_date = new Date().getTime();
                 }
             });
+            user.save();
         });
 
         var session_delay_time = 4; // [s]
