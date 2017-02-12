@@ -225,6 +225,10 @@ TrackerClient.prototype.getSessionId = function () {
     var sid = this.cookie.get('uiqsid');
     if (sid !== null)
         return sid;
+    // jeśli nie ma cookisa i jest lock dla usera to nara
+    if(client_locked === true){
+        return false;
+    }
     var new_sid = Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7);
     this.cookie.set("uiqsid", new_sid, this.session_exp_days);
     return new_sid;
@@ -232,7 +236,7 @@ TrackerClient.prototype.getSessionId = function () {
 
 var init = function () {
     
-    // te zmienne są doklejane na serwerze do tego skryptu przed wysłąniem klientowi
+    // te zmienne są doklejane na serwerze do tego skryptu przed wysłąniem klientowi // client_locked
     if (!uib_site_secret || !uib_client_secret)
         return;
 
@@ -243,6 +247,16 @@ var init = function () {
     inst.uib_client_secret = uib_client_secret;
     var body = document.body;
     inst.time_start = Date.now();
+    
+    inst.session_id = false;
+    inst.session_id = inst.getSessionId();
+    
+    if(inst.session_id === false){
+        // prawdopodobnie client_locked
+        return false;
+    }
+    
+    
     var surl = (uib_site_secret.replace(':8080', '')+':8080').replace('http://', '');
     var surl = uib_site_secret.replace('http://', '');
     surl = 'http://'+surl;
@@ -265,7 +279,7 @@ var init = function () {
 //        console.log('Disconnected 44');
 //    });
     // http://stackoverflow.com/questions/40820274/save-web-page-source-javascript
-    inst.session_id = inst.getSessionId();
+    
 
 
     var last_html = inst.getBackground();

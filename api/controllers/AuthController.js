@@ -50,6 +50,10 @@ module.exports = {
         params.password = req.param('password');
         params.secret = sha1(Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7) + '4wina');
         params.sites = [{url: url, active: true, secret: sha1(Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7) + 'dupa7')}];
+        
+        params.clients_allow = true; // blokada dla sryptow clienta
+        params.clients_counter = 0; // po ilu klientach ma sie wlaczyc ta blokada
+        params.last_allow_time = new Date().getTime();
 
         User.create(params).exec(function (err, user) {
             req.login(user, function (err) {
