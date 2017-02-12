@@ -14,9 +14,20 @@ module.exports = {
         tracking_data: {type: 'json'}           // dane trackingowe
     },
     /*
-     * Tu przylatują dane przez socket. Dodajemy do istniejącej sesji, albo tworzy nową jeśli takiej nie ma.
+     * Tu przylatują dane przez socket. Dodajemy do istniejącej sesji, albo tworzy nową jeśli takiej nie ma.1486916273121e
      */
     insertTrackData: function (track_data, client_ip) {
+        
+        // znajdz usera i dopisz mu do strony ostatni czas danych
+        User.findOne({
+            secret: track_data.uib_client_secret
+        }).exec(function (err, user) {
+            user.sites.forEach(function (site) {
+                if(site.secret === track_data.uib_site_secret){
+                    site.last_data_received_date = new Date().getTime();
+                }
+            });
+        });
 
         var session_delay_time = 4; // [s]
         Tracker.findOne({
@@ -46,7 +57,7 @@ module.exports = {
                         document_height: track_data.document_height,
                     }
                 }
-                if(track_data.type === 'client_info'){ console.log('client_info',track_data.data_client_info)
+                if(track_data.type === 'client_info'){
                     obj.client_info = track_data.data_client_info;
                 }
                 
