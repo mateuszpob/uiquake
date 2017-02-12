@@ -66,6 +66,7 @@ module.exports = {
                     session_started_at: track_data.session_started_at,
                     last_data_received_at: track_data.send_at,
                     client_ip: client_ip,
+                    user_agent: track_data.user_agent,
                     client_info: track_data.client_info,
 
                     move_data: {},

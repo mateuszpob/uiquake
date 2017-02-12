@@ -30,7 +30,7 @@
                     <thead>
                         <tr>
                             <th>Domain</th>
-                            <th>session id</th>
+                            <th>Session id</th>
                             <th>Client ip</th>
                             <th>Country</th>
                             <th>City</th>
@@ -41,7 +41,7 @@
                     <tfoot>
                         <tr>
                             <th>Domain</th>
-                            <th>id</th>
+                            <th>Session id</th>
                             <th>Client ip</th>
                             <th>Country</th>
                             <th>City</th>
@@ -96,9 +96,33 @@
             "columns": [
                 {"data": "origin"},
                 {"data": "session_id"},
-                {"data": "client_info.ip"},
-                {"data": "client_info.country_name"},
-                {"data": "client_info.city"},
+                {
+                    "orderable": true,
+                    "data": "client_info",
+                    "render": function (data, type, row) { 
+                        if(row.client_info && row.client_info.ip)
+                            return row.client_info.ip;
+                        else return '-';
+                    },
+                },
+                {
+                    "orderable": true,
+                    "data": "client_info",
+                    "render": function (data, type, row) {
+                        if(row.client_info && row.client_info.country_name)
+                            return row.client_info.country_name;
+                        else return '-';
+                    },
+                },
+                {
+                    "orderable": true,
+                    "data": "client_info",
+                    "render": function (data, type, row) { 
+                        if(row.client_info && row.client_info.city)
+                            return row.client_info.city
+                        else return '-';
+                    },
+                },
                 {
                     "orderable": true,
                     "data": "session_started_at",
