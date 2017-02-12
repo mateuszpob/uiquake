@@ -226,7 +226,7 @@ TrackerClient.prototype.getSessionId = function () {
     if (sid !== null)
         return sid;
     // jeśli nie ma cookisa i jest lock dla usera to nara
-    if(client_locked === true){
+    if(typeof client_locked !== 'undefined' && client_locked === true){
         return false;
     }
     var new_sid = Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7);
@@ -237,7 +237,7 @@ TrackerClient.prototype.getSessionId = function () {
 var init = function () {
     
     // te zmienne są doklejane na serwerze do tego skryptu przed wysłąniem klientowi // client_locked
-    if (!uib_site_secret || !uib_client_secret)
+    if (typeof uib_site_secret === 'undefined' ||  typeof uib_client_secret === 'undefined')
         return;
 
 
