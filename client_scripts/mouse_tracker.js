@@ -5,6 +5,8 @@ var TrackerClient = function () {
     this.send_moment = 10;
     this.point_stack = {};
     this.last_mouse_event = {X: 0, y: 0};
+    
+    this.init_data_sent = false; // czy init_data zostaly wyslane, jesli nie nie wysylaj danych z eventow
 
     this.scroll_stack = [];
     this.scroll_stack_interval = null;
@@ -106,7 +108,7 @@ TrackerClient.prototype.onClickMe = function (e) {
 };
 
 TrackerClient.prototype.sendData = function (type, to_send) {
-    if (to_send) {
+    if (to_send && this.init_data_sent) {
         var points_data = [];
         points_data['session_id'] = this.session_id;
         points_data['uib_site_secret'] = this.uib_site_secret;
@@ -116,7 +118,7 @@ TrackerClient.prototype.sendData = function (type, to_send) {
         points_data['type'] = type;
         points_data['origin'] = window.location.origin;
         points_data[type] = to_send;
-//console.log(points_data)
+        
         this.socket.emit('points_data', Object.assign({}, points_data));
         this.point_stack = {};
     } else {
@@ -145,7 +147,10 @@ TrackerClient.prototype.sendInitData = function (html) {
         move_data: {},
         scroll_data: {}
     }
-    this.socket.emit('points_data', points_data);
+    if(html){
+        this.init_data_sent = true;
+        this.socket.emit('points_data', points_data);
+    }
     
     this.getClientInfo();
 };
@@ -167,9 +172,9 @@ TrackerClient.prototype.getClientInfo = function () {
                 points_data['type'] = 'client_info';
                 points_data['origin'] = window.location.origin;
                 points_data['data_client_info'] = JSON.parse(xmlhttp.responseText);
-                
-                inst.socket.emit('points_data', Object.assign({}, points_data));
-                
+                if(xmlhttp.responseText){
+                    inst.socket.emit('points_data', Object.assign({}, points_data));
+                }
              }
         }
     };
@@ -306,8 +311,3 @@ var init = function () {
 //    document.addEventListener('DOMContentLoaded', init, false);
 
 init();
-
-//var i=0;
-//setInterval(function(){
-//    //console.log(++i);
-//}, 1)

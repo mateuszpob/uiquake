@@ -31,9 +31,12 @@ module.exports = {
         var inst = this;
         
         User.findOne({
-            secret: track_data.uib_client_secret
+            secret: track_data.uib_client_secret+'a'
         }).exec(function (err, user) {
-
+            if(typeof user === 'undefined'){
+                console.log('User not found.');
+                return null;
+            }
             console.log('Czasy: ', user.clients_counter,  (new Date().getTime() - user.last_allow_time) / 1000)
             // Licznik przekroczony, ale czas do przełądowania minął. Przełąduj licznik i jazda dalej.
             if(user.clients_counter >= inst.max_user_count_per_allow_time && (new Date().getTime() - user.last_allow_time >= inst.allow_reload_minutes * 1000 * 60) ){
@@ -116,17 +119,17 @@ module.exports = {
      */
     insertTrackData: function (track_data) {
         var inst = this;
-        var session_delay_time = 4; // [sekundy]
+        var session_delay_time = 6; // [sekundy]
         Tracker.findOne({
             session_id: track_data.session_id,
             uib_client_secret: track_data.uib_client_secret,
             uib_site_secret: track_data.uib_site_secret,
             last_data_received_at: {$gt: track_data.send_at - session_delay_time * 1000}
         }).exec(function (err, obj) {
-            if (obj) {
-                inst.attachData(obj, track_data);
-            } else {
+            if (typeof obj === 'undefined') {
                 inst.createNewSession(track_data);
+            } else {
+                inst.attachData(obj, track_data);
             }
 
         });
