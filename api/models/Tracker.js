@@ -31,7 +31,7 @@ module.exports = {
         var inst = this;
         
         User.findOne({
-            secret: track_data.uib_client_secret+'a'
+            secret: track_data.uib_client_secret
         }).exec(function (err, user) {
             if(typeof user === 'undefined'){
                 console.log('User not found.');
