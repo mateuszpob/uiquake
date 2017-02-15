@@ -215,6 +215,8 @@ Tracker.prototype.initCanvasAndBackground = function (one_step, noFirst) {
  * Odpalane po zaladowaniu nowego backgrounda
  */
 Tracker.prototype.setCursorPosition = function () {
+    if(!this.move_data_legth > 0)
+        return;
     this.ctx = this.canvas.getContext("2d");
     var t = this.time_temp;
     var i = 0;
@@ -230,7 +232,7 @@ Tracker.prototype.setCursorPosition = function () {
         this.tracker_cursor.style.top = this.trackData.move_data[t].c_y - 30;
         this.tracker_cursor.style.left = this.trackData.move_data[t].c_x - 40;
     }
-
+    return;
 };
 /*
  * Inicjuje linie czasu, wylicza długość jednego kroku w pikselach
