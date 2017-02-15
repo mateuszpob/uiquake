@@ -66,12 +66,11 @@
         if(!started){
             setInterval(function(){
                 tab.ajax.reload();
-                console.log('sdddddddddddddddddd')
             }, 3000);
             started = true;
         }
             
-    }
+    };
     
     function removeTracking(e, data) {
         var http = new XMLHttpRequest();
@@ -86,8 +85,7 @@
             }
         }
         http.send(params);
-    }
-    ;
+    };
 
     $(document).ready(function () {
         tab = $('#example').DataTable({
