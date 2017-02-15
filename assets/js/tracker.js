@@ -215,8 +215,11 @@ Tracker.prototype.initCanvasAndBackground = function (one_step, noFirst) {
  * Odpalane po zaladowaniu nowego backgrounda
  */
 Tracker.prototype.setCursorPosition = function () {
-    if(!this.move_data_legth > 0)
+    if(!this.move_data_legth > 0){
+        this.tracker_cursor.style.top = 9999;
+        this.tracker_cursor.style.left = 9999;
         return;
+    }
     this.ctx = this.canvas.getContext("2d");
     var t = this.time_temp;
     var i = 0;
@@ -453,7 +456,7 @@ Tracker.prototype.scrollEvent = function (one_step) {
                 inst.ctx.lineTo(inst.current_move_step.c_x, inst.current_move_step.c_y + inst.current_scroll_top);
                 inst.ctx.stroke();
         
-                if (body.scrollTop >= one_step.end_scroll)
+                if (body.scrollTop > one_step.end_scroll)
                     clearInterval(interval);
             } else {
                 // skrolowanie
