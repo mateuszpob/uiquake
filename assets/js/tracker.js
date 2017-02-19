@@ -88,8 +88,19 @@ Tracker.prototype.scaleBackground = function (one_step) {
 
 //    .log(style)
 
-        var player_width = document.getElementById('trck-player').offsetWidth - 2;
-        this.tracking_scale = player_width / one_step.viewport_width;
+    var player_width = document.getElementById('trck-player').offsetWidth;
+    var player_height = document.getElementById('trck-player').offsetHeight - 155;
+    
+    if(one_step.viewport_width > one_step.viewport_height){
+        this.tracking_scale = (player_width ) / one_step.viewport_width;
+    }else{
+        this.tracking_scale = (player_height ) / one_step.viewport_height;
+    }
+    
+    console.log(player_width, player_height, this.tracking_scale)
+    console.log(one_step.viewport_width, one_step.viewport_height)
+    
+    
         
         
     this.background = document.getElementById('tracker-background');
@@ -102,8 +113,9 @@ Tracker.prototype.scaleBackground = function (one_step) {
 
     document.getElementById('tracking-player').style.width = one_step.viewport_width + "px";
     document.getElementById('tracking-player').style.height = one_step.viewport_height + 50 + "px";
-    document.getElementById('tracking-player').style.transform = 'scale(' + this.tracking_scale + ')';
+    document.getElementById('tracking-player').style.transform = 'scale(' + this.tracking_scale + ') translateX(-50%)';
     document.getElementById('tracking-player').style.transformOrigin = '0 0';
+    document.getElementById('tracking-player').style.left = '50%';
 
 };
 /*
@@ -430,10 +442,11 @@ Tracker.prototype.mouseMoveEvent = function (one_step) {
     }
 };
 Tracker.prototype.clickEvent = function (one_step, time) { 
-    if(one_step){
+    if(one_step){ 
         this.switchActionOnList('click', time);
         this.ctx.fillStyle="#00FF00";
         this.ctx.fillRect(one_step.c_x-5, one_step.c_y + this.current_scroll_top-5, 10, 10);
+        this.ctx.stroke();
     }
 };
 Tracker.prototype.scrollEvent = function (one_step) {

@@ -61,7 +61,8 @@
 
 
     #trck-player{
-        background: #000;
+        /*background: #000;*/
+        position: relative;
         padding: 0;
 
     }
@@ -145,7 +146,9 @@
         background: #000;
         height: 50px;
         width: 100%;
-        margin-top: -130px;
+        position: absolute;
+        bottom: 103px;
+        z-index: 999999;
     }
 
     #trck-timeline-container{
@@ -247,17 +250,17 @@
 
             </div>
             <div class="player-nav huj">
-            <div id="trck-play-session" class="pause"></div>
-            <div id="trck-timeline-container">
-                <div id="trck-timeline">
-                    <div id="trck-progress">
-                        <div class="action-mark"></div>
+                <div id="trck-play-session" class="pause"></div>
+                <div id="trck-timeline-container">
+                    <div id="trck-timeline">
+                        <div id="trck-progress">
+                            <div class="action-mark"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>    
-        
+
         <!--End X-Panel-->
 
 
