@@ -57,7 +57,7 @@ module.exports.session = {
 
    host: 'localhost',
    port: 6379,
-   ttl: 60,
+   ttl: 99999,
    db: 0,
    pass: '123123',
    prefix: 'sess:',
