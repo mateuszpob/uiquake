@@ -12,6 +12,7 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.session.html
  */
 
+var local = require('./local');
 module.exports.session = {
 
   /***************************************************************************
@@ -44,23 +45,23 @@ module.exports.session = {
   *                                                                          *
   ***************************************************************************/
 
-   adapter: 'redis',
-
-  /***************************************************************************
-  *                                                                          *
-  * The following values are optional, if no options are set a redis         *
-  * instance running on localhost is expected. Read more about options at:   *
-  *                                                                          *
-  * https://github.com/visionmedia/connect-redis                             *
-  *                                                                          *
-  ***************************************************************************/
-
-   host: 'localhost',
-   port: 6379,
-   ttl: 60,
-   db: 0,
-   pass: '123123',
-   prefix: 'sess:',
+//   adapter: 'redis',
+//
+//  /***************************************************************************
+//  *                                                                          *
+//  * The following values are optional, if no options are set a redis         *
+//  * instance running on localhost is expected. Read more about options at:   *
+//  *                                                                          *
+//  * https://github.com/visionmedia/connect-redis                             *
+//  *                                                                          *
+//  ***************************************************************************/
+//
+//   host: 'localhost',
+//   port: 6379,
+//   ttl: 60,
+//   db: 0,
+//   pass: '123123',
+//   prefix: 'sess:',
 
 
   /***************************************************************************
@@ -74,8 +75,8 @@ module.exports.session = {
   *                                                                          *
   ***************************************************************************/
 
-  // adapter: 'mongo',
-  // url: 'mongodb://user:password@localhost:27017/dbname', // user, password and port optional
+   adapter: 'mongo',
+   url: 'mongodb://uiquake:qweasd123A@85.255.15.162:27017/uiquake', // user, password and port optional
 
   /***************************************************************************
   *                                                                          *
