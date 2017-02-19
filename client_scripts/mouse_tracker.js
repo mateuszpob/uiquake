@@ -128,7 +128,7 @@ TrackerClient.prototype.sendData = function (type, to_send) {
 /*
  * Wysyla dane inicjujące pierwszy obiekt sesji na serwerze
  */
-TrackerClient.prototype.sendInitData = function (html) {
+TrackerClient.prototype.sendInitData = function (html) { console.log('send init')
     var points_data = {
         session_id: this.session_id,
         uib_site_secret: this.uib_site_secret,
@@ -147,7 +147,7 @@ TrackerClient.prototype.sendInitData = function (html) {
         move_data: {},
         scroll_data: {}
     }
-    if(html){
+    if(html){console.log('init sended')
         this.init_data_sent = true;
         this.socket.emit('points_data', points_data);
     }
@@ -261,15 +261,10 @@ var init = function () {
         return false;
     }
     
-    
-    var surl = (uib_site_secret.replace(':8080', '')+':8080').replace('http://', '');
-    var surl = uib_site_secret.replace('http://', '');
-    surl = 'http://'+surl;
-    console.log("Connect to: "+surl);
-//    inst.socket = io.connect('http://'+surl);
-    inst.socket = io.connect('http://85.255.15.162');
-//console.log(">>", socket_url)
-//    inst.socket = io.connect('http://127.0.0.1:8080');
+    inst.socket = io.connect(server_url);
+    console.log("Connect to: "+server_url);
+
+
 
 //    inst.socket.on('connect_error', function () {
 //        console.log('Connection Error 44');

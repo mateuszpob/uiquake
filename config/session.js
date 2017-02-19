@@ -12,6 +12,8 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.session.html
  */
 
+var local = require('./local');
+
 module.exports.session = {
 
   /***************************************************************************
@@ -44,7 +46,7 @@ module.exports.session = {
   *                                                                          *
   ***************************************************************************/
 
-   adapter: 'redis',
+//   adapter: 'redis',
 
   /***************************************************************************
   *                                                                          *
@@ -55,12 +57,12 @@ module.exports.session = {
   *                                                                          *
   ***************************************************************************/
 
-   host: 'localhost',
-   port: 6379,
-   ttl: 99999,
-   db: 0,
-   pass: '123123',
-   prefix: 'sess:',
+//   host: 'localhost',
+//   port: 6379,
+//   ttl: 99999,
+//   db: 0,
+//   pass: '123123',
+//   prefix: 'sess:',
 
 
   /***************************************************************************
@@ -98,3 +100,14 @@ module.exports.session = {
   // }
 
 };
+
+if(local.session === 'redis'){
+    module.exports.session['adapter'] = 'redis';
+    module.exports.session['host'] = 'localhost';
+    module.exports.session['port'] = 6379;
+    module.exports.session['ttl'] = 99999;
+    module.exports.session['db'] = 0;
+    module.exports.session['pass'] = '123123';
+    module.exports.session['prefix'] = 'sess';
+}
+

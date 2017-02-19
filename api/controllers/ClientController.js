@@ -6,6 +6,7 @@
  */
 var fs = require('fs');
 var sha1 = require('sha1');
+var local = require('../../config/local');
 
 module.exports = {
     /*
@@ -48,6 +49,7 @@ module.exports = {
                                             result_script += ' var uib_site_secret = "' + site.secret + '"; ';
                                             result_script += ' var uib_client_secret = "' + client_secret + '"; ';
                                             result_script += ' var socket_url = "' + req.host + '"; ';
+                                            result_script += ' var server_url = "' + local.server_url + '"; ';
                                             if(client_locked){
                                                 result_script += ' var client_locked = true; ';
                                             }
