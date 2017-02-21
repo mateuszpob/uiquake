@@ -23,7 +23,7 @@
 module.exports.routes = {
         
     // GET CLIENT SCRIPTS
-    'get /clientscr/:client_secret/:site_secret/trck': 'ClientController.getClientTrackingScript',
+    'get /clientscr/:user_secret/:site_secret/trck': 'ClientController.getClientTrackingScript',
 
     /***************************************************************************
      *                                                                          *

@@ -24,10 +24,10 @@ module.exports = {
      */
     getClientTrackingScript: function (req, response) {
         var inst = this;
-        var client_secret = req.param('client_secret');
+        var user_secret = req.param('user_secret');
         var site_secret = req.param('site_secret');
         
-        User.findOne({secret: client_secret}).exec(function (err, user) {
+        User.findOne({secret: user_secret}).exec(function (err, user) {
             if (user) {
                 var client_locked = false;
                 // sprawdz czy nie trzeba pierdolnąć
@@ -47,7 +47,7 @@ module.exports = {
                                         } else {
                                             var result_script = socket_script;
                                             result_script += ' var uib_site_secret = "' + site.secret + '"; ';
-                                            result_script += ' var uib_client_secret = "' + client_secret + '"; ';
+                                            result_script += ' var uib_user_secret = "' + user_secret + '"; ';
                                             result_script += ' var socket_url = "' + req.host + '"; ';
                                             result_script += ' var server_url = "' + local.server_url + '"; ';
                                             if(client_locked){
@@ -70,7 +70,7 @@ module.exports = {
                 }
 
             } else {
-                return inst.returnEmptyScript(response, 'User not found. Secret: ' + client_secret);
+                return inst.returnEmptyScript(response, 'User not found. Secret: ' + user_secret);
             }
         });
     },

@@ -38,7 +38,7 @@ module.exports = {
         
         var obj = Tracker.find({
             'move_data': {$not: {$size: 0}},
-            'uib_client_secret': req.user.secret
+            'uib_user_secret': req.user.secret
         }).sort('session_started_at DESC').exec(function (err, obj) {
             return res.json({data: obj});
         });

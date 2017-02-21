@@ -16,7 +16,7 @@ var TrackerClient = function () {
     this.socket = null;
 
     this.time_start;
-    this.session_id;
+    this.client_id;
 };
 
 
@@ -110,9 +110,9 @@ TrackerClient.prototype.onClickMe = function (e) {
 TrackerClient.prototype.sendData = function (type, to_send) {
     if (to_send && this.init_data_sent) {
         var points_data = [];
-        points_data['session_id'] = this.session_id;
+        points_data['client_id'] = this.client_id;
         points_data['uib_site_secret'] = this.uib_site_secret;
-        points_data['uib_client_secret'] = this.uib_client_secret;
+        points_data['uib_user_secret'] = this.uib_user_secret;
         points_data['session_started_at'] = this.time_start;
         points_data['send_at'] = new Date().getTime();
         points_data['type'] = type;
@@ -130,9 +130,9 @@ TrackerClient.prototype.sendData = function (type, to_send) {
  */
 TrackerClient.prototype.sendInitData = function (html) { console.log('@@@ send init')
     var points_data = {
-        session_id: this.session_id,
+        client_id: this.client_id,
         uib_site_secret: this.uib_site_secret,
-        uib_client_secret: this.uib_client_secret,
+        uib_user_secret: this.uib_user_secret,
         session_started_at: this.time_start,
         send_at: new Date().getTime(),
         user_agent: navigator.userAgent,
@@ -164,9 +164,9 @@ TrackerClient.prototype.getClientInfo = function () {
             if(xmlhttp.status === 200) {
                 
                 var points_data = [];
-                points_data['session_id'] = inst.session_id;
+                points_data['client_id'] = inst.client_id;
                 points_data['uib_site_secret'] = inst.uib_site_secret;
-                points_data['uib_client_secret'] = inst.uib_client_secret;
+                points_data['uib_user_secret'] = inst.uib_user_secret;
                 points_data['session_started_at'] = inst.time_start;
                 points_data['send_at'] = new Date().getTime();
                 points_data['type'] = 'client_info';
@@ -242,21 +242,21 @@ TrackerClient.prototype.getSessionId = function () {
 var init = function () {
     
     // te zmienne są doklejane na serwerze do tego skryptu przed wysłąniem klientowi // client_locked
-    if (typeof uib_site_secret === 'undefined' ||  typeof uib_client_secret === 'undefined')
+    if (typeof uib_site_secret === 'undefined' ||  typeof uib_user_secret === 'undefined')
         return;
 
 
     var inst = new TrackerClient();
 
     inst.uib_site_secret = uib_site_secret;
-    inst.uib_client_secret = uib_client_secret;
+    inst.uib_user_secret = uib_user_secret;
     var body = document.body;
     inst.time_start = Date.now();
     
-    inst.session_id = false;
-    inst.session_id = inst.getSessionId();
+    inst.client_id = false;
+    inst.client_id = inst.getSessionId();
     
-    if(inst.session_id === false){
+    if(inst.client_id === false){
         // prawdopodobnie client_locked
         return false;
     }

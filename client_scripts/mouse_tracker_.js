@@ -21,7 +21,7 @@ var TrackerClient = function() {
     this.point_stack = [];
     this.socket;
     this.time_start;
-    this.session_id;
+    this.client_id;
 
     this.cookie_name = 'tracker_sid';
     this.session_exp_days = 1;
@@ -53,7 +53,7 @@ TrackerClient.prototype.onmousemoveM = function(e){
 TrackerClient.prototype.sendData = function(){
     if(this.point_stack.length){
         var points_data = {
-            session_id: this.session_id,
+            client_id: this.client_id,
             app_key: 'hwdpjp100%',
             session_started_at: this.time_start,
             width: window.innerWidth, 
@@ -70,7 +70,7 @@ TrackerClient.prototype.sendBackgroundData = function(bckgr){
     if(true){
         var time_from_start = Date.now() - this.time_start;
         var data = {
-            session_id: this.session_id,
+            client_id: this.client_id,
             app_key: 'hwdpjp100%',
             session_started_at: this.time_start,
             width: window.innerWidth, 
@@ -159,7 +159,7 @@ var init = function(){
     var body = document.getElementsByTagName("BODY")[0];
     inst.time_start = Date.now();
     inst.socket = io.connect('http://127.0.0.1:1337');
-    inst.session_id = inst.getSessionId();
+    inst.client_id = inst.getSessionId();
     
     inst.getBackground();
    

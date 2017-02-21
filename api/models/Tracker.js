@@ -7,7 +7,7 @@
 
 module.exports = {
     attributes: {
-        session_id: {type: 'string'}, // id sesji
+        client_id: {type: 'string'}, // id sesji
         app_key: {type: 'string'}, // id aplikacji (strony internetowej)
         tracked_on_page: {type: 'string'}, // podstrona na ktorej zarejestrowano akcj
         session_started_at: {type: 'integer'}, // timestam startu sesji
@@ -28,8 +28,8 @@ module.exports = {
         var inst = this;
         var session_delay_time = 6; // [sekundy]
         Tracker.findOne({
-            session_id: track_data.session_id,
-            uib_client_secret: track_data.uib_client_secret,
+            client_id: track_data.client_id,
+            uib_user_secret: track_data.uib_user_secret,
             uib_site_secret: track_data.uib_site_secret,
             last_data_received_at: {$gt: track_data.send_at - session_delay_time * 1000}
         }).exec(function (err, obj) {
@@ -52,7 +52,7 @@ module.exports = {
         var inst = this;
         
         User.findOne({
-            secret: track_data.uib_client_secret
+            secret: track_data.uib_user_secret
         }).exec(function (err, user) {
             if(typeof user === 'undefined'){
 //                console.log('User not found.');
@@ -72,8 +72,8 @@ module.exports = {
             
             // Stworz nowy obiekt sesji trackingu
             Tracker.create({
-                session_id: track_data.session_id,
-                uib_client_secret: track_data.uib_client_secret,
+                client_id: track_data.client_id,
+                uib_user_secret: track_data.uib_user_secret,
                 uib_site_secret: track_data.uib_site_secret,
                 origin: track_data.origin,
                 session_started_at: track_data.session_started_at,
@@ -97,7 +97,7 @@ module.exports = {
                 // Po stworzeniu sesji podbij licznik clientow
                 user.clients_counter++;
                 user.save();
-                console.log('Stworzona sesja: ' + track_data.session_id);
+                console.log('Stworzona sesja: ' + track_data.client_id);
             });
             
         });
