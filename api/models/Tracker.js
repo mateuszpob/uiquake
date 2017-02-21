@@ -14,13 +14,34 @@ module.exports = {
         tracking_data: {type: 'json'}           // dane trackingowe
     },
     /*
-     * Czas po ktorym wyłącza się blokada clientow
+     * Czas po ktorym wyłącza się blokada clientow [min]
      */
     allow_reload_minutes: 2,
     /*
      * Maksymalna liczba nowych sesji jaka moze byc utworzona w czasie "allow_reload_minutes"
      */
     max_user_count_per_allow_time: 10,
+    /*
+     * Tu przylatują dane przez socket. Dodajemy do istniejącej sesji, albo tworzy nową jeśli takiej nie ma.1486916273121e
+     */
+    insertTrackData: function (track_data) {
+        var inst = this;
+        var session_delay_time = 6; // [sekundy]
+        Tracker.findOne({
+            session_id: track_data.session_id,
+            uib_client_secret: track_data.uib_client_secret,
+            uib_site_secret: track_data.uib_site_secret,
+            last_data_received_at: {$gt: track_data.send_at - session_delay_time * 1000}
+        }).exec(function (err, obj) {
+            if (typeof obj === 'undefined') {
+                inst.createNewSession(track_data);
+            } else {
+                inst.attachData(obj, track_data);
+            }
+
+        });
+    },
+    
     /*
      * Tworzy nowy obiekt sesji
      * 
@@ -34,10 +55,11 @@ module.exports = {
             secret: track_data.uib_client_secret
         }).exec(function (err, user) {
             if(typeof user === 'undefined'){
-                console.log('User not found.');
+//                console.log('User not found.');
                 return null;
             }
-            console.log('Czasy: ', user.clients_counter,  (new Date().getTime() - user.last_allow_time) / 1000)
+            //console.log('Czasy: ', user.clients_counter,  (new Date().getTime() - user.last_allow_time) / 1000)
+            
             // Licznik przekroczony, ale czas do przełądowania minął. Przełąduj licznik i jazda dalej.
             if(user.clients_counter >= inst.max_user_count_per_allow_time && (new Date().getTime() - user.last_allow_time >= inst.allow_reload_minutes * 1000 * 60) ){
                 user.clients_counter = 0;
@@ -113,26 +135,7 @@ module.exports = {
 
         obj.last_data_received_at = track_data.send_at;
         obj.save();
-    },
-    /*
-     * Tu przylatują dane przez socket. Dodajemy do istniejącej sesji, albo tworzy nową jeśli takiej nie ma.1486916273121e
-     */
-    insertTrackData: function (track_data) {
-        var inst = this;
-        var session_delay_time = 6; // [sekundy]
-        Tracker.findOne({
-            session_id: track_data.session_id,
-            uib_client_secret: track_data.uib_client_secret,
-            uib_site_secret: track_data.uib_site_secret,
-            last_data_received_at: {$gt: track_data.send_at - session_delay_time * 1000}
-        }).exec(function (err, obj) {
-            if (typeof obj === 'undefined') {
-                inst.createNewSession(track_data);
-            } else {
-                inst.attachData(obj, track_data);
-            }
-
-        });
     }
+    
 };
 

@@ -128,7 +128,7 @@ TrackerClient.prototype.sendData = function (type, to_send) {
 /*
  * Wysyla dane inicjujące pierwszy obiekt sesji na serwerze
  */
-TrackerClient.prototype.sendInitData = function (html) { console.log('send init')
+TrackerClient.prototype.sendInitData = function (html) { console.log('@@@ send init')
     var points_data = {
         session_id: this.session_id,
         uib_site_secret: this.uib_site_secret,
@@ -147,7 +147,7 @@ TrackerClient.prototype.sendInitData = function (html) { console.log('send init'
         move_data: {},
         scroll_data: {}
     }
-    if(html){console.log('init sended')
+    if(html){console.log('### init sended')
         this.init_data_sent = true;
         this.socket.emit('points_data', points_data);
     }
