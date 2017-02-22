@@ -41,12 +41,15 @@ module.exports = {
             uib_user_secret: track_data.uib_user_secret,
             uib_site_secret: track_data.uib_site_secret
         }).sort('last_data_received_at DESC').exec(function (err, obj) {
-
-            switch (this.session_control_option) {
+console.log('Aa')
+            switch (inst.session_control_option) {
                 case 'death_time':
+                    console.log('Abbb')
                     if (track_data.type === 'init' && ( typeof obj === 'undefined' || track_data.send_at - obj.last_data_received_at < this.session_delay_time * 1000 )) {
+                        console.log('A')
                         inst.createNewSession(track_data);
                     }else if (typeof obj !== 'undefined') {
+                        console.log('B')
                         inst.attachData(obj, track_data);
                     }
                     break;
@@ -111,7 +114,7 @@ module.exports = {
                 // Po stworzeniu sesji podbij licznik clientow
                 user.clients_counter++;
                 user.save();
-                console.log('Stworzona sesja: ' + track_data.client_id);
+                console.log('Stworzona sesja: ' + track_data.client_id, track_data.type);
             });
 
         });
@@ -149,6 +152,7 @@ module.exports = {
 
         obj.last_data_received_at = track_data.send_at;
         obj.save();
+        console.log('Dopisano do sesji: ' + track_data.client_id, track_data.type);
     }
 
 };

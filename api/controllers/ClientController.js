@@ -31,7 +31,7 @@ module.exports = {
             if (user) {
                 var client_locked = false;
                 // sprawdz czy nie trzeba pierdolnąć
-                console.log(user.clients_counter, new Date().getTime() - user.last_allow_time , inst.allow_reload_minutes * 1000 * 60);
+//                console.log(user.clients_counter, new Date().getTime() - user.last_allow_time , inst.allow_reload_minutes * 1000 * 60);
                 if(user.clients_counter >= inst.max_user_count_per_allow_time && (new Date().getTime() - user.last_allow_time < inst.allow_reload_minutes * 1000 * 60) ){
                     client_locked = true;
                 }
