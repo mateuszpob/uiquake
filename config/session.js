@@ -76,7 +76,7 @@ module.exports.session = {
   ***************************************************************************/
 
    adapter: 'mongo',
-   url: 'mongodb://uiquake:qweasd123A@85.255.15.162:27017/uiquake', // user, password and port optional
+   url: local.session_mongo_url, // user, password and port optional
 
   /***************************************************************************
   *                                                                          *

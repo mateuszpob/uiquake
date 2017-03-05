@@ -41,11 +41,11 @@ module.exports = {
             uib_user_secret: track_data.uib_user_secret,
             uib_site_secret: track_data.uib_site_secret
         }).sort('last_data_received_at DESC').exec(function (err, obj) {
-console.log('Aa')
+
             switch (inst.session_control_option) {
                 case 'death_time':
                     console.log('Abbb')
-                    if (track_data.type === 'init' && ( typeof obj === 'undefined' || track_data.send_at - obj.last_data_received_at < this.session_delay_time * 1000 )) {
+                    if (track_data.type === 'init' && ( typeof obj === 'undefined' || track_data.send_at - obj.last_data_received_at > this.session_delay_time * 1000 )) {
                         console.log('A')
                         inst.createNewSession(track_data);
                     }else if (typeof obj !== 'undefined') {

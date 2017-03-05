@@ -19,6 +19,8 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.connections.html
  */
 
+var local = require('./local');
+
 module.exports.connections = {
 
     /***************************************************************************
@@ -32,64 +34,14 @@ module.exports.connections = {
         adapter: 'sails-disk'
     },
 
-    /***************************************************************************
-     *                                                                          *
-     * MySQL is the world's most popular relational database.                   *
-     * http://en.wikipedia.org/wiki/MySQL                                       *
-     *                                                                          *
-     * Run: npm install sails-mysql                                             *
-     *                                                                          *
-     ***************************************************************************/
-    // someMysqlServer: {
-    //   adapter: 'sails-mysql',
-    //   host: 'YOUR_MYSQL_SERVER_HOSTNAME_OR_IP_ADDRESS',
-    //   user: 'YOUR_MYSQL_USER', //optional
-    //   password: 'YOUR_MYSQL_PASSWORD', //optional
-    //   database: 'YOUR_MYSQL_DB' //optional
-    // },
-
-    /***************************************************************************
-     *                                                                          *
-     * MongoDB is the leading NoSQL database.                                   *
-     * http://en.wikipedia.org/wiki/MongoDB                                     *
-     *                                                                          *
-     * Run: npm install sails-mongo                                             *
-     *                                                                          *
-     ***************************************************************************/
-//   someMongodbServer: {
-//     adapter: 'sails-mongo',
-//     host: 'ds159188.mlab.com',
-//     port: 59188,
-//     user: 'huj', //optional
-//     password: 'huj', //optional
-//     database: 'czfurka' //optional
-//   },
-    someMongodbServer: {
-//        adapter: 'sails-mongo',
-//        url: process.env.CONNSTR
-    },
-//   someMongodbServer: {
-//     adapter: 'sails-mongo',
-//     host: 'localhost',
-//     port: 27017,
-//     database: 'sailspass' //optional
-//   },
-
-    huj: {
-        adapter: 'sails-mongo',
-//url: 'mongodb://uiquake:qweasd123A@85.255.15.162:27017/uiquake'
-//url: 'mongodb://localhost:27017/sails'
-url: process.env.CONNECTION_STRING
-    },
-    
     dev: {
         adapter: 'sails-mongo',
-        url: 'mongodb://localhost:27017/sails'
+        url: 'mongodb://uib:uib@localhost:27017/test'
     },
     
     prod: {
         adapter: 'sails-mongo',
-        url: 'mongodb://uiquake:qweasd123A@85.255.15.162:27017/uiquake'
+        url: local.mongo_url
     },
 
     /***************************************************************************
