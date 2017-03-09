@@ -29,7 +29,7 @@ module.exports = {
     /*
      * Jeśli client nie wykonal zadnych akcji przez tyle sekund, dostanie nowa sesje [s]
      */
-    session_delay_time: 30,
+    session_delay_time: 10,
     /*
      * Tu przylatują dane przez socket. Dodajemy do istniejącej sesji, 
      * albo tworzy nową jeśli takiej nie ma.

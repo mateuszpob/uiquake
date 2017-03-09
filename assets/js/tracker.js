@@ -16,7 +16,6 @@ var Tracker = function () { // hard4Monday
     this.counter = 1; // licznik krokow w rysowaniu ścieżki
     this.tracking_drav_interval = null; // interval do rysowania sciezki
     this.timeline_interval = null; // interval do lini czasu
-    this.timeline_current_length = 0; // dlugosc progressbara (px)
     this.frstTimelineStart = true;
     this.go_step_locker = false; // blokada przycisków go_step, jak jeden step sie laduje to zeby nie klikac, bo i na huj
     this.redirect_steps = [];
@@ -26,6 +25,7 @@ var Tracker = function () { // hard4Monday
     this.current_move_step = null; // ostatni krok
     
     this.current_scroll_top = 0;
+    this.content_avilable_width = 0; // szerokosc dostepnej przestrzeni na wyswietlanie trackingu. Tyle bedzie miala dlugosci linia timera
 
     this.events_timer_interval = null; // wersja z timerem: główny timer eventów (interval)
     this.run_time = null; // czas w ktorym rozpocznie się odtwarzanie eventow
@@ -45,6 +45,9 @@ var Tracker = function () { // hard4Monday
     this.events_interval = null;
     this.scroll_data_legth = 0;
     this.dupa = true;
+    
+    this.no_action_delay_seconds = 20;
+    this.no_actions_dividion = []; // przedzialy czasowe w ktorych nie bylo zadnej akcji przez czas rowny conajmniej "this.no_action_delay_seconds"
 
     this.tracking_path = document.getElementById('tracking-path-wrapper');
 };
@@ -88,8 +91,11 @@ Tracker.prototype.scaleBackground = function (one_step) {
 
 //    .log(style)
 
-    var player_width = document.getElementById('trck-player').offsetWidth;
-    var player_height = document.getElementById('trck-player').offsetHeight - 155;
+    
+    this.content_avilable_width = document.getElementById('trck-player').offsetWidth;
+
+    var player_width = this.content_avilable_width-30;
+    var player_height = document.body.offsetHeight - 155;
     
     if(one_step.viewport_width > one_step.viewport_height){
         this.tracking_scale = (player_width ) / one_step.viewport_width;
@@ -97,8 +103,6 @@ Tracker.prototype.scaleBackground = function (one_step) {
         this.tracking_scale = (player_height ) / one_step.viewport_height;
     }
     
-    console.log(player_width, player_height, this.tracking_scale)
-    console.log(one_step.viewport_width, one_step.viewport_height)
     
     
         
@@ -113,9 +117,11 @@ Tracker.prototype.scaleBackground = function (one_step) {
 
     document.getElementById('tracking-player').style.width = one_step.viewport_width + "px";
     document.getElementById('tracking-player').style.height = one_step.viewport_height + 50 + "px";
-    document.getElementById('tracking-player').style.transform = 'scale(' + this.tracking_scale + ') translateX(-50%)';
+    document.getElementById('tracking-player').style.transform = 'scale(' + this.tracking_scale + ')';// translateX(-50%)';
     document.getElementById('tracking-player').style.transformOrigin = '0 0';
-    document.getElementById('tracking-player').style.left = '50%';
+//    document.getElementById('tracking-player').style.left = '50%';
+
+    document.getElementById('trck-player').style.height = (one_step.viewport_height)*this.tracking_scale + "px";
 
 };
 /*
@@ -148,8 +154,30 @@ Tracker.prototype.findFirsAndLastEventTime = function () {
     // ustaw dlugosci danych trackingu kursora i eventow
     this.move_data_legth = this.trackData.move_data.length;
     this.scroll_data_legth = this.trackData.scroll_data.length;
-
-
+    
+    // Poszukaj przedziałóœ bez zadnej akcji.
+    var step_a = 0;
+    var step_b = 0;
+    var unlock = true;
+    
+    var no_actions_dividion = [];
+    console.log('Event times: ', this.first_event_time, this.last_event_time)
+    for(var i=10 ; i<this.last_event_time ; i+=10){
+        if(this.trackData.move_data[i] ){
+            if(unlock){
+                step_a = i;
+                unlock = false;
+            }else{
+                step_b = step_a;
+                step_a = i;
+                
+                if(step_a - step_b > this.no_action_delay_seconds * 1000){
+                    this.no_actions_dividion.push({time_a: step_a, time_b: step_b, difference_time: step_a - step_b});
+                }
+                
+            }
+        }
+    }
 };
 
 /*
@@ -215,7 +243,6 @@ Tracker.prototype.initCanvasAndBackground = function (one_step, noFirst) {
         if(!noFirst)
             inst.time_start = Date.now() - inst.time_temp;
 
-        inst.initTimeline();
         inst.runTimer();
 
     };
@@ -250,28 +277,14 @@ Tracker.prototype.setCursorPosition = function () {
     return;
 };
 /*
- * Inicjuje linie czasu, wylicza długość jednego kroku w pikselach
+ * Przesuwa pasek progresu zgodnie z aktualnym wskazaniem timera
  */
-Tracker.prototype.initTimeline = function () {
-    if (this.frstTimelineStart) {
-        var inst = this;
-        var timeline_width = document.getElementById('trck-timeline').offsetWidth + 11;
-
-        this.step_length = timeline_width / this.last_event_time * 10;
-        
-        this.frstTimelineStart = false;
-    }
-};
-/*
- * Przesuwa pasek progresu o wyliczoną liczbę pikseli,
- * tak by doszedł do końca przez cały czas odtwarzania sesji.
- */
-Tracker.prototype.timelineGoOneStep = function () {
+Tracker.prototype.timelineUpdate = function () {
     var progress_bar = document.getElementById('trck-progress');
-    this.timeline_current_length += this.step_length;
-    progress_bar.style = "width:" + parseInt(this.timeline_current_length) + "px;";
+    var huj = this.content_avilable_width * this.time_temp / this.last_event_time;
+    progress_bar.style = "width:" + parseInt(huj) + "px;";
 };
-/*
+/*12
  * Pokazuje akcje z sesji (kilki, przekierowania ...)
  */
 Tracker.prototype.showActions = function () {
@@ -279,10 +292,10 @@ Tracker.prototype.showActions = function () {
     var time;
     for(var c in this.trackData.click_data){
         html += '<div class="user-action click-action" data-time="'+c+'">' +
-                        '<div class="mark"></div>' +
-                        '<p>Clicked <span class="time">'+this.msToHuj(c)+'</span>'+
-                        '&nbsp;<span class="actag">'+this.trackData.click_data[c].target_tag+'</span></p>' +
-                    '</div>';
+                    '<div class="mark"></div>' +
+                    '<p>Click <span class="time">'+this.msToHuj(c)+'</span>'+
+                    '&nbsp;<span class="actag">'+this.trackData.click_data[c].target_tag+'</span></p>' +
+                '</div>';
         
     }
     document.getElementById('actions-container').insertAdjacentHTML('beforeend', html);
@@ -295,11 +308,15 @@ Tracker.prototype.msToHuj = function(ms) {
     ms = parseInt(ms);
     var seconds = parseInt((ms/1000)%60);
     var minutes = parseInt((ms/(1000*60))%60);
-//    var hours = parseInt((ms/(1000*60*60))%24);
+    var hours = parseInt((ms/(1000*60*60))%24);
     seconds = seconds + "";
     minutes = minutes + "";
     var pad = "00"
-    var r = pad.substring(0, pad.length - minutes.length) + minutes
+    var r = '';
+    if(hours > 0){
+        r+= pad.substring(0, pad.length - hours.length) + hours + ':'
+    }
+    r += pad.substring(0, pad.length - minutes.length) + minutes
     r += ':' + pad.substring(0, pad.length - seconds.length) + seconds;
     return r;
 };
@@ -313,10 +330,23 @@ Tracker.prototype.switchActionOnList = function (action, time) {
  */
 Tracker.prototype.runTimer = function () {
     var inst = this;
+    
     this.events_timer = setInterval(function () {
-        inst.time_temp = Math.round((Date.now() - inst.time_start) / 10) * 10;
+//        inst.time_temp = Math.round((Date.now() - inst.time_start) / 10) * 10;
 
-        inst.timelineGoOneStep();
+    inst.time_temp += 10;
+        //no_actions_dividion
+        
+        
+//        if(inst.time_temp == inst.no_actions_dividion[0].time_b){
+//            console.log('inst.time_temp', inst.time_temp)
+//            inst.time_temp = inst.no_actions_dividion[0].time_a - 2000;
+//            console.log('inst.time_temp', inst.time_temp)
+//        }
+
+        document.getElementById('tracking-timer').innerHTML = inst.msToHuj(inst.time_temp)+' / '+inst.msToHuj(inst.last_event_time);
+
+        inst.timelineUpdate();
 
         inst.mouseMoveEvent(inst.trackData.move_data["" + inst.time_temp]);
         inst.clickEvent(inst.trackData.click_data["" + inst.time_temp], inst.time_temp);
@@ -338,21 +368,20 @@ Tracker.prototype.runTimer = function () {
 Tracker.prototype.addEventListeners = function () {
     var inst = this;
     document.getElementById('trck-play-session').addEventListener("click", function(e){inst.playSession(e)});
-//    document.getElementById('trck-timeline').addEventListener("click", function(e){inst.scrollSession(e)});
+    document.getElementById('trck-timeline').addEventListener("click", function(e){inst.scrollSession(e)});
 };
 Tracker.prototype.playSession = function (e) { 
     var inst = this;
     // RELOAD SESSION
-    if(this.session_playing_end){ console.log('RELOAD -')
+    if(this.session_playing_end){
         this.time_temp = 0;
         this.tracker_cursor.style.top = '-999999px';
         this.initCanvasAndBackground(this.trackData.background_data['10']);
-        this.timeline_current_length = 0;
         document.getElementById('trck-progress').style.width = '0';
         e.target.className = 'pause';
     }
     // PAUSE SESSION
-    else if(this.run){console.log('PAUSe -')
+    else if(this.run){
         this.time_start -= Date.now();
         this.run = false;
         clearInterval(inst.events_timer)
@@ -363,7 +392,7 @@ Tracker.prototype.playSession = function (e) {
         e.target.className = 'play';
     }
     // PLAY SESSION
-    else{ console.log('PLAj -')
+    else{ 
         this.time_start += Date.now();
         this.run = true;
         this.runTimer();
@@ -377,42 +406,8 @@ Tracker.prototype.playSession = function (e) {
  * @returns void
  */
 Tracker.prototype.scrollSession = function (e) {
-    var inst = this;
-    this.run = false;
-    
-    
-    var timeline_width = document.getElementById('trck-timeline').offsetWidth;
-    inst.time_start = Date.now() - (inst.last_event_time * e.offsetX / timeline_width);
-    
-    // znajdz backgorund ktory jest z tego przedziału czasowego w ktorym nastąpi start
-    var background_time = 10;
-    for (var k in inst.trackData.background_data){
-        if(parseInt(k) <= inst.time_start){
-            background_time = k;
-        }
-    }
-    
-    
-    clearInterval(inst.events_timer)
-    setTimeout(function(){clearInterval(inst.events_timer)}, 50);
-    setTimeout(function(){clearInterval(inst.events_timer)}, 100);
-    setTimeout(function(){clearInterval(inst.events_timer)}, 150);
-    setTimeout(function(){clearInterval(inst.events_timer)}, 200);
-    
-    
-    
-    setTimeout(function(){
-        var timeline_width = document.getElementById('trck-timeline').offsetWidth;
-        inst.time_start = Date.now() - (inst.last_event_time * e.offsetX / timeline_width);
-        inst.timeline_current_length = e.offsetX;
-        e.target.className = 'pause';
-        document.getElementById('trck-progress').style.width = e.offsetX;
-        inst.run = true;
-        inst.initCanvasAndBackground(inst.trackData.background_data[background_time], true);
-
-    }, 250);
+    this.time_temp = Math.round(this.last_event_time * e.offsetX / this.content_avilable_width / 10) * 10;
 };
-
 
 
 
@@ -466,7 +461,7 @@ Tracker.prototype.scrollEvent = function (one_step) {
                 // skrolowanie
                 body.scrollTop += 10;
                 inst.current_scroll_top += 10;
-                // rosowanie ścieżki myszy
+                // rysowanie ścieżki myszy
                 if(inst.current_move_step != null){
                     inst.ctx.lineTo(inst.current_move_step.c_x, inst.current_move_step.c_y + inst.current_scroll_top);
                     inst.ctx.stroke();
