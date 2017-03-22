@@ -65,7 +65,7 @@ Tracker.prototype.init = function (tracker_id) {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             
-            tracker_inst.addEventListeners();
+            
 
             tracker_inst.trackData = JSON.parse(xhttp.responseText).data;
 
@@ -77,7 +77,7 @@ Tracker.prototype.init = function (tracker_id) {
             // ustaw dane do rysowania, eventy, background ... 
             tracker_inst.initCanvasAndBackground(tracker_inst.trackData.background_data['10']);
 
-
+            tracker_inst.addEventListeners();
         }
     };
 };
@@ -103,10 +103,6 @@ Tracker.prototype.scaleBackground = function (one_step) {
         this.tracking_scale = (player_height ) / one_step.viewport_height;
     }
     
-    
-    
-        
-        
     this.background = document.getElementById('tracker-background');
     this.background.width = one_step.viewport_width;
     this.background.height = one_step.viewport_height;
@@ -369,7 +365,13 @@ Tracker.prototype.addEventListeners = function () {
     var inst = this;
     document.getElementById('trck-play-session').addEventListener("click", function(e){inst.playSession(e)});
     document.getElementById('trck-timeline').addEventListener("click", function(e){inst.scrollSession(e)});
+    Array.prototype.slice.call(document.getElementsByClassName('user-action')).forEach(function(o){o.addEventListener("click", function(e){inst.goToAction(o)})});
 };
+/* addEventListener("click", function(e){inst.scrollSession(e)});
+ * Przycisk Play/Pause/Reload obok lini czasu
+ * @param {type} e
+ * @returns {undefined}ame
+ */
 Tracker.prototype.playSession = function (e) { 
     var inst = this;
     // RELOAD SESSION
@@ -409,7 +411,9 @@ Tracker.prototype.scrollSession = function (e) {
     this.time_temp = Math.round(this.last_event_time * e.offsetX / this.content_avilable_width / 10) * 10;
 };
 
-
+Tracker.prototype.goToAction = function (o) {
+    this.time_temp = parseInt(o.getAttribute('date-time'))-2000;
+};
 
 /*______________________________________________________________________________
  * EVENTY
