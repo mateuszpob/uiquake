@@ -86,11 +86,6 @@ Tracker.prototype.init = function (tracker_id) {
  * @returns {undefined}
  */
 Tracker.prototype.scaleBackground = function (one_step) {
-
-    //var style = window.getComputedStyle(document.getElementById("scale-meter"), null);//.getPropertyValue("width");
-
-//    .log(style)
-
     
     this.content_avilable_width = document.getElementById('trck-player').offsetWidth;
 
@@ -339,6 +334,8 @@ Tracker.prototype.runTimer = function () {
 //            inst.time_temp = inst.no_actions_dividion[0].time_a - 2000;
 //            console.log('inst.time_temp', inst.time_temp)
 //        }
+
+console.log('TIME:', inst.time_temp, inst.last_event_time)
 
         document.getElementById('tracking-timer').innerHTML = inst.msToHuj(inst.time_temp)+' / '+inst.msToHuj(inst.last_event_time);
 
